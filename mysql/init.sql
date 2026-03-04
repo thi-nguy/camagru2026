@@ -1,11 +1,16 @@
 CREATE TABLE users (
-    id              CHAR(36)        PRIMARY KEY,
-    username        VARCHAR(50)     NOT NULL UNIQUE,
-    email           VARCHAR(255)    NOT NULL UNIQUE,
-    password_hash   VARCHAR(255)    NOT NULL,
-    avatar          VARCHAR(255),
-    bio             TEXT,
-    created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
+    id                      CHAR(36)        PRIMARY KEY,
+    username                VARCHAR(50)     NOT NULL UNIQUE,
+    email                   VARCHAR(255)    NOT NULL UNIQUE,
+    password_hash           VARCHAR(255)    NOT NULL,
+    avatar                  VARCHAR(255),
+    bio                     TEXT,
+    created_at              TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+    confirm_token           VARCHAR(64)     DEFAULT NULL UNIQUE,
+    is_confirmed            BOOLEAN         DEFAULT FALSE,
+    reset_token             VARCHAR(64)     DEFAULT NULL UNIQUE,
+    reset_token_expires_at  TIMESTAMP,
+    email_notifications     BOOLEAN         DEFAULT TRUE
 );
 
 CREATE TABLE photos (

@@ -12,6 +12,8 @@ spl_autoload_register(function($className) {
     }
 });
 
+loadEnv(__DIR__ . '/../.env');
+
 $router = new Router();
 require_once __DIR__ . '/../routesList.php';
 $router->dispatch($_SERVER['REQUEST_URI']);
