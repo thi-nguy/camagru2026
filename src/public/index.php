@@ -1,9 +1,9 @@
 <?php 
 
-require __DIR__ . '/../core/helpers.php';
+require __DIR__ . '/../app/Core/helpers.php';
 
 spl_autoload_register(function($className) {
-    $folders = ['/../core/', '/../app/Controllers/'];
+    $folders = ['/../app/Core/', '/../app/Controllers/'];
     foreach ($folders as $folder) {
         $file = __DIR__ . $folder . $className . '.php';
         if (file_exists($file)) {

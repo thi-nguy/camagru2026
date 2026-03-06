@@ -2,9 +2,13 @@
 
 function render(string $view, array $data = []) {
     extract($data);
-    require __DIR__ . '/../app/Views/layout/header.php';
+
+    $extraCssFile = '/css/' . pathinfo($view, PATHINFO_FILENAME) . '.css';
+    $haveExtraCss = file_exists(__DIR__ . '/../../public' . $extraCssFile) ? $extraCssFile : null;
+
+    require __DIR__ . '/../Views/layout/header.php';
     require('../app/Views/' . $view . '.php');
-    require __DIR__ . '/../app/Views/layout/footer.php';
+    require __DIR__ . '/../Views/layout/footer.php';
 }
 
 function loadEnv(string $path) {

@@ -1,0 +1,51 @@
+<section class="view active" id="viewAuth">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">Camagru</div>
+
+      <div class="tab-row">
+        <button class="tab-btn" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+        <button class="tab-btn active" id="tabRegister" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form class="auth-form" id="formLogin" onsubmit="return submitLogin(event)">
+        <div class="input-group">
+          <label class="input-label" for="loginUser">Username</label>
+          <input class="input-field" id="loginUser" type="text" placeholder="your_username" autocomplete="username">
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="loginPass">Password</label>
+          <input class="input-field" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <a class="forgot-link" href="#">Forgot password?</a>
+        <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center;padding:11px">Sign In</button>
+        <div class="success-msg" id="loginSuccess">
+          <span>✓</span> Logged in successfully!
+        </div>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form class="auth-form active" id="formRegister" onsubmit="return submitRegister(event)">
+        <div class="input-group">
+          <label class="input-label" for="regUser">Username</label>
+          <input class="input-field" id="regUser" type="text" placeholder="choose_a_username" autocomplete="username">
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="regEmail">Email</label>
+          <input class="input-field" id="regEmail" type="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="regPass">Password</label>
+          <input class="input-field" id="regPass" type="password" placeholder="create a strong password" autocomplete="new-password" oninput="updateStrength(this.value)">
+          <div class="strength-bar-wrap"><div class="strength-bar" id="strengthBar"></div></div>
+          <div class="strength-label" id="strengthLabel">Enter a password</div>
+        </div>
+        <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center;padding:11px">Create Account</button>
+        <div class="success-msg" id="registerSuccess">
+          <span>✓</span> Account created! Check your email to confirm.
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

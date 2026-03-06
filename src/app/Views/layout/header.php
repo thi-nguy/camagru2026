@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camagru</title>
     <link rel="stylesheet" href="/css/main.css">
+    <?php if (!empty($haveExtraCss)): ?>
+      <link rel="stylesheet" href="<?=htmlspecialchars($extraCssFile) ?>">
+    <?php endif; ?>
 </head>
 <body>
     <header class="header" id="header">
