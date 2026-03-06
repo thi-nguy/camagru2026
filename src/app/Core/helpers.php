@@ -6,6 +6,9 @@ function render(string $view, array $data = []) {
     $extraCssFile = '/css/' . pathinfo($view, PATHINFO_FILENAME) . '.css';
     $haveExtraCss = file_exists(__DIR__ . '/../../public' . $extraCssFile) ? $extraCssFile : null;
 
+    $extraJsFile = '/js/' . pathinfo($view, PATHINFO_FILENAME) . '.js';
+    $haveExtraJs = file_exists(__DIR__ . '/../../public' . $extraJsFile) ? $extraJsFile : null;
+
     require __DIR__ . '/../Views/layout/header.php';
     require('../app/Views/' . $view . '.php');
     require __DIR__ . '/../Views/layout/footer.php';

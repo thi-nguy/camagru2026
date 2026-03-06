@@ -1,3 +1,4 @@
 <?php
-$router->addRoute('/gallery', ['GalleryController', 'index']);
-$router->addRoute('/register', ['AuthController', 'index']);
+$router->addRoute('GET', '/gallery', ['GalleryController', 'index']);
+$router->addRoute('GET', '/register', ['AuthController', 'showRegister']);
+$router->addRoute('POST', '/register', ['AuthController', 'register']);

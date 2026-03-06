@@ -26,22 +26,23 @@
       </form>
 
       <!-- REGISTER FORM -->
-      <form class="auth-form active" id="formRegister" onsubmit="return submitRegister(event)">
+      <form class="auth-form active" id="formRegister" method="POST" action="/register">
         <div class="input-group">
           <label class="input-label" for="regUser">Username</label>
-          <input class="input-field" id="regUser" type="text" placeholder="choose_a_username" autocomplete="username">
+          <input class="input-field" id="regUser" name="username" type="text" placeholder="choose_a_username" autocomplete="username" oninput="validateRegister()">
+          <span class="field-error" id="errUser"></span>
         </div>
         <div class="input-group">
           <label class="input-label" for="regEmail">Email</label>
-          <input class="input-field" id="regEmail" type="email" placeholder="you@example.com" autocomplete="email">
+          <input class="input-field" id="regEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" oninput="validateRegister()">
+          <span class="field-error" id="errEmail"></span>
         </div>
         <div class="input-group">
           <label class="input-label" for="regPass">Password</label>
-          <input class="input-field" id="regPass" type="password" placeholder="create a strong password" autocomplete="new-password" oninput="updateStrength(this.value)">
-          <div class="strength-bar-wrap"><div class="strength-bar" id="strengthBar"></div></div>
-          <div class="strength-label" id="strengthLabel">Enter a password</div>
+          <input class="input-field" id="regPass" name="password" type="password" placeholder="create a strong password" autocomplete="new-password" oninput="validateRegister()">
+          <span class="field-error" id="errPass"></span>
         </div>
-        <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center;padding:11px">Create Account</button>
+        <button class="btn btn-primary" type="submit" id="registerBtn" disabled style="width:100%;justify-content:center;padding:11px">Create Account</button>
         <div class="success-msg" id="registerSuccess">
           <span>✓</span> Account created! Check your email to confirm.
         </div>
