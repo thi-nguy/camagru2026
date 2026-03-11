@@ -23,3 +23,10 @@ function loadEnv(string $path) {
         }
     }
 }
+
+function flashMessage(string $key): ?string {
+    if(!isset($_SESSION[$key])) return null;
+    $msg = htmlspecialchars($_SESSION[$key]);
+    unset($_SESSION[$key]);
+    return $msg;
+}

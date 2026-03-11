@@ -1,7 +1,7 @@
 <?php
 
 class Database {
-    static $pdo_instance;
+    private static $pdo_instance = null;
 
     private function __construct () {
         self::$pdo_instance = new PDO(
@@ -16,9 +16,7 @@ class Database {
     static function getInstance() {
         if (self::$pdo_instance === NULL) {
             new Database();
-            return self::$pdo_instance;
-        } else {
-            return self::$pdo_instance;
         }
+        return self::$pdo_instance;
     }
 }

@@ -30,22 +30,49 @@
         <div class="input-group">
           <label class="input-label" for="regUser">Username</label>
           <input class="input-field" id="regUser" name="username" type="text" placeholder="choose_a_username" autocomplete="username" oninput="validateRegister()">
-          <span class="field-error" id="errUser"></span>
+          <span class="field-error" id="errUser"><?php
+  if(isset($_SESSION['serverErrUser'])) {
+    echo htmlspecialchars($_SESSION['serverErrUser']);
+    unset($_SESSION['serverErrUser']);
+  }
+?>
         </div>
         <div class="input-group">
           <label class="input-label" for="regEmail">Email</label>
           <input class="input-field" id="regEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" oninput="validateRegister()">
-          <span class="field-error" id="errEmail"></span>
+          <span class="field-error" id="errEmail"><?php
+  if(isset($_SESSION['serverErrEmail'])) {
+    echo htmlspecialchars($_SESSION['serverErrEmail']);
+    unset($_SESSION['serverErrEmail']);
+  }
+?></span>
         </div>
         <div class="input-group">
           <label class="input-label" for="regPass">Password</label>
           <input class="input-field" id="regPass" name="password" type="password" placeholder="create a strong password" autocomplete="new-password" oninput="validateRegister()">
-          <span class="field-error" id="errPass"></span>
+          <span class="field-error" id="errPass"><?php
+  if(isset($_SESSION['serverErrPass'])) {
+    echo htmlspecialchars($_SESSION['serverErrPass']);
+    unset($_SESSION['serverErrPass']);  }
+?></span>
         </div>
         <button class="btn btn-primary" type="submit" id="registerBtn" disabled style="width:100%;justify-content:center;padding:11px">Create Account</button>
-        <div class="success-msg" id="registerSuccess">
-          <span>✓</span> Account created! Check your email to confirm.
-        </div>
+       
+        <?php if($msg = flashMessage('duplicateUserErr')): ?>
+            <div class="msg fail" id="duplicateUserErr">
+              <?= $msg ?>
+          </div>
+        <?php endif ?>
+        <?php if($msg = flashMessage('createAccountOk')): ?>
+            <div class="msg success" id="registerSuccess">
+              <span>✓ </span><?= $msg ?>
+          </div>
+        <?php endif ?>
+        <?php if($msg = flashMessage('createAccountNotOk')): ?>
+            <div class="msg fail" id="registerFail">
+              <?= $msg ?>
+          </div>
+        <?php endif ?>
       </form>
     </div>
   </div>
