@@ -17,4 +17,5 @@ loadEnv(__DIR__ . '/../.env');
 
 $router = new Router();
 require_once __DIR__ . '/../routesList.php';
-$router->dispatch($_SERVER['REQUEST_URI']);
+$uriParts = parse_url($_SERVER['REQUEST_URI']);
+$router->dispatch($uriParts['path']);

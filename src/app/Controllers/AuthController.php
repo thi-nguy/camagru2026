@@ -9,7 +9,7 @@ function sendConfirmEmail(string $toEmail, string $toName, string $token): bool 
    $mailUser = $_ENV['MAIL_USER'] ?? getenv('MAIL_USER');
    $hostName = $_ENV['HOST'] ?? getenv('HOST');
    $subject = "Confirm your Camagru's account";
-   $message = 'Hello ' . $toName . "! Please confirm your email address by clicking this link: " . $hostName . '?=' . $token;
+   $message = 'Hello ' . $toName . "! Please confirm your email address by clicking this link: " . $hostName . '/confirm?token=' . $token;
    $headers = "From: " . $mailUser;
 
    $result = mail($toEmail, $subject, $message, $headers);
@@ -93,6 +93,29 @@ class AuthController {
             error_log("DB Error: " . $e->getMessage());
             $_SESSION['createAccountNotOk'] = 'Unable to create new account';
             redirect("/register");
+        }
+    }
+
+    public function confirmEmail() {
+        if (isset($_GET['token'])) {
+            $tokenFromUser = $_GET['token'] ?? '';
+            if (preg_match('/^[a-f0-9]{64}$/', $tokenFromUser)) {
+                $db = Database::getInstance();
+                $stmt = $db->prepare("SELECT * FROM users WHERE confirm_token = :confirm_token");
+                $stmt->execute([':confirm_token' => $tokenFromUser]);
+                $existUser = $stmt->fetch();
+                if ($existUser) {
+                    $expireDate = new DateTime($existUser['confirm_token_expires_at']);
+                    $today = new DateTime();
+                    if ($expireDate >= $today) {
+                        $stmt = $db->prepare("UPDATE users SET confirm_token = NULL, is_confirmed = 1 WHERE id = :userId");
+                        $stmt->execute([':userId' => $existUser['id']]);
+                        render("GalleryView");
+                        echo 'Confirm email OK.';
+                    }
+                }
+            } else {
+            }
         }
     }
 }

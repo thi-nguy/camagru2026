@@ -110,6 +110,42 @@
   background: #fff;
 }
 
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .input-field {
+  padding-right: 42px; /* nhường chỗ cho icon */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+
+.toggle-password:hover {
+  color: var(--text);
+}
+
+.eye-icon,
+.eye-off-icon {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
 /* ─── PASSWORD STRENGTH ──────────────────────── */
 .strength-bar-wrap {
   height: 4px;
