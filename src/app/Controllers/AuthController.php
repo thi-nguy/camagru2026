@@ -6,11 +6,35 @@ function redirect(string $url) {
 }
 
 function sendConfirmEmail(string $toEmail, string $toName, string $token): bool {
-   $mailUser = $_ENV['MAIL_USER'] ?? getenv('MAIL_USER');
+   $camagruAdminEmail = $_ENV['MAIL_USER'] ?? getenv('MAIL_USER');
    $hostName = $_ENV['HOST'] ?? getenv('HOST');
+   $confirmUrl = $hostName . '/confirm?token=' . $token;
    $subject = "Confirm your Camagru's account";
-   $message = 'Hello ' . $toName . "! Please confirm your email address by clicking this link: " . $hostName . '/confirm?token=' . $token;
-   $headers = "From: " . $mailUser;
+
+   $boundary = md5(uniqid(time()));
+
+   $headers  = 'MIME-Version: 1.0' . "\r\n";
+   $headers .= 'Content-Type: multipart/alternative; boundary="' . $boundary . '"' . "\r\n";
+   $headers .= 'From: ' . $camagruAdminEmail . "\r\n";
+
+   $plainText = 'Hello ' . htmlspecialchars($toName) . '!' . "\r\n"
+           . 'Please confirm your email by copying this URL:' . "\r\n"
+           . $confirmUrl;
+
+    $html = '
+           <html><body>
+               <p>Hello ' . htmlspecialchars($toName) . '!</p>
+               <p>Please confirm your email address:</p>
+               <p><a href="' . $confirmUrl . '">Confirm Email Address</a></p>
+               <p>Or copy this URL: ' . $confirmUrl . '</p>
+           </body></html>';
+    $message = "--{$boundary}\r\n"
+           . "Content-Type: text/plain; charset=UTF-8\r\n\r\n"
+           . $plainText . "\r\n\r\n"
+           . "--{$boundary}\r\n"
+           . "Content-Type: text/html; charset=UTF-8\r\n\r\n"
+           . $html . "\r\n\r\n"
+           . "--{$boundary}--";
 
    $result = mail($toEmail, $subject, $message, $headers);
 
