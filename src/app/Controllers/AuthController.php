@@ -1,47 +1,9 @@
 <?php
 
-function redirect(string $url) {
-    header('Location: ' . $url);
-    exit();
-}
-
-function sendConfirmEmail(string $toEmail, string $toName, string $token): bool {
-   $camagruAdminEmail = $_ENV['MAIL_USER'] ?? getenv('MAIL_USER');
-   $hostName = $_ENV['HOST'] ?? getenv('HOST');
-   $confirmUrl = $hostName . '/confirm?token=' . $token;
-   $subject = "Confirm your Camagru's account";
-
-   $boundary = md5(uniqid(time()));
-
-   $headers  = 'MIME-Version: 1.0' . "\r\n";
-   $headers .= 'Content-Type: multipart/alternative; boundary="' . $boundary . '"' . "\r\n";
-   $headers .= 'From: ' . $camagruAdminEmail . "\r\n";
-
-   $plainText = 'Hello ' . htmlspecialchars($toName) . '!' . "\r\n"
-           . 'Please confirm your email by copying this URL:' . "\r\n"
-           . $confirmUrl;
-
-    $html = '
-           <html><body>
-               <p>Hello ' . htmlspecialchars($toName) . '!</p>
-               <p>Please confirm your email address:</p>
-               <p><a href="' . $confirmUrl . '">Confirm Email Address</a></p>
-               <p>Or copy this URL: ' . $confirmUrl . '</p>
-           </body></html>';
-    $message = "--{$boundary}\r\n"
-           . "Content-Type: text/plain; charset=UTF-8\r\n\r\n"
-           . $plainText . "\r\n\r\n"
-           . "--{$boundary}\r\n"
-           . "Content-Type: text/html; charset=UTF-8\r\n\r\n"
-           . $html . "\r\n\r\n"
-           . "--{$boundary}--";
-
-   $result = mail($toEmail, $subject, $message, $headers);
-
-   return $result;
-}
 
 class AuthController {
+    public function __construct(private UserModel $userModel) {}
+
     public function showRegister() {
         render("AuthView");
     }
@@ -72,42 +34,15 @@ class AuthController {
             redirect("/register");
         }
 
-        $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
-        $stmt->execute([':username' => $username, ':email' => $email]);
-        $existUser = $stmt->fetch();
+        $existUser = $this->userModel->findByEmailOrUsername($email, $username);
 
         if ($existUser) {
             $_SESSION['duplicateUserErr'] = 'Username or Email already used';
             redirect("/register");
         }
-
-        $hashPass = password_hash($password, PASSWORD_BCRYPT);
-        $confirmToken = bin2hex(random_bytes(32));
-        $confirmTokenExpireAt = date("Y-m-d H:i:s", time() + 3 * 86400);
-
-        $uuid = bin2hex(random_bytes(16));
-        $uuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($uuid, 4));
-
         try {
-            $stmt = $db->prepare("INSERT INTO users (id, username, email, password_hash, confirm_token, confirm_token_expires_at) VALUES (:uuid, :username, :email, :password_hash, :confirm_token, :confirm_token_expires_at)");
-            $stmt->execute([
-                ':uuid'         => $uuid,
-                ':username'      => $username,
-                ':email'         => $email,
-                ':password_hash' => $hashPass,
-                ':confirm_token'     => $confirmToken,
-                ':confirm_token_expires_at' => $confirmTokenExpireAt
-            ]);
-            if ($stmt->rowCount() > 0) {
-                $_SESSION['createAccountOk'] = 'Your account has been created';
-                $sent = sendConfirmEmail($email, $username, $confirmToken);
-                if (!$sent) {
-                    error_log("Problem while sending confirm email to user ID: " . $uuid);
-                    $_SESSION['createAccountNotOk'] = 'Can not send confirm email';
-                } else {
-                    $_SESSION['createAccountOk'] .= '. A confirmation email has been sent to you';
-                }
+            if ($this->userModel->insertNewUser($username, $email, $password) > 0) {
+                
                 redirect("/register");
             } else {
                 $_SESSION['createAccountNotOk'] = 'No new account is created';
@@ -124,22 +59,38 @@ class AuthController {
         if (isset($_GET['token'])) {
             $tokenFromUser = $_GET['token'] ?? '';
             if (preg_match('/^[a-f0-9]{64}$/', $tokenFromUser)) {
-                $db = Database::getInstance();
-                $stmt = $db->prepare("SELECT * FROM users WHERE confirm_token = :confirm_token");
-                $stmt->execute([':confirm_token' => $tokenFromUser]);
-                $existUser = $stmt->fetch();
+                $existUser = $this->userModel->findByConfirmToken($tokenFromUser);
                 if ($existUser) {
-                    $expireDate = new DateTime($existUser['confirm_token_expires_at']);
-                    $today = new DateTime();
-                    if ($expireDate >= $today) {
-                        $stmt = $db->prepare("UPDATE users SET confirm_token = NULL, is_confirmed = 1 WHERE id = :userId");
-                        $stmt->execute([':userId' => $existUser['id']]);
-                        render("GalleryView");
-                        echo 'Confirm email OK.';
+                    if ($existUser['is_confirmed'] != 1) {
+                        $expireDate = new DateTime($existUser['confirm_token_expires_at']);
+                        $today = new DateTime();
+                        if ($expireDate > $today) {
+                            $this->userModel->confirmUser($existUser['id']);
+                            $_SESSION['confirmOk'] = 'Successfully confirm your account. You can login now.';
+                            redirect("/register");
+                        } else {
+                            $this->userModel->removeConfirmToken($existUser['id']);
+                            http_response_code(410);
+                            $_SESSION['expiredConfirmLink'] = 'Your confirm link is expired.';
+                            // Todo: Button Resend confirmation email (new token will be created)
+                            redirect("/register");
+                        }
+                    } else {
+                        $_SESSION['alreadyConfirm'] = 'You have confirmed your email. You can login now.';
+                        redirect("/register");
                     }
+                } else {
+                    http_response_code(404);
+                    $_SESSION['notExistAccount'] = 'Your account does not exist.';
+                    redirect("/register");
                 }
             } else {
+                http_response_code(400);
+                exit('Invalid token format');
             }
+        } else {
+            http_response_code(404);
+            exit('Token not found.');
         }
     }
 }

@@ -1,5 +1,5 @@
 <?php
-$router->addRoute('GET', '/gallery', ['GalleryController', 'index']);
-$router->addRoute('GET', '/register', ['AuthController', 'showRegister']);
-$router->addRoute('POST', '/register', ['AuthController', 'register']);
-$router->addRoute('GET', '/confirm', ['AuthController', 'confirmEmail']);
+$router->addRoute('GET', '/gallery', $galleryController, 'index');
+$router->addRoute('GET', '/register', $authController, 'showRegister');
+$router->addRoute('POST', '/register', $authController, 'register');
+$router->addRoute('GET', '/confirm', $authController, 'confirmEmail');
