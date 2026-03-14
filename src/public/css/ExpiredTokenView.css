@@ -134,3 +134,27 @@
   @media (max-width: 480px) {
     .card { padding: 36px 22px 28px; }
   }
+
+  .msg {
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .success {
+    background: #f0fff4;
+    border: 1.5px solid #bbf7d0;
+    color: #166534;
+  }
+  
+  .fail {
+    background: #fff5f5;
+    border: 1.5px solid #fecaca;
+    color: #e74c3c;
+  }

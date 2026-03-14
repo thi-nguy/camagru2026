@@ -23,11 +23,12 @@
       </div>
 
       <!-- Email input -->
-      <form class="form-group">
+      <form class="form-group" method="POST" action="/expired-token">
           <div class="input-wrap">
         <label class="form-label" for="emailInput">Email address</label>
           <input
             class="input-field"
+            name="email"
             type="email"
             id="emailInput"
             placeholder="you@example.com"
@@ -40,6 +41,22 @@
           Send new confirmation link
         </button>
     </form>
+
+    <?php if ($msg = success('recreateToken')): ?>
+          <div class="msg success" id="recreateTokenSuccess">
+            <span>✓ </span><?= $msg ?>
+          </div>
+        <?php endif ?>
+        <?php if ($msg = flashMessage('info')): ?>
+          <div class="msg success" id="resendTokenSuccess">
+            <span>✓ </span><?= $msg ?>
+          </div>
+        <?php endif ?>
+        <?php if ($msg = flashMessage('warning')): ?>
+          <div class="msg fail" id="resendTokenFail">
+            <?= $msg ?>
+          </div>
+        <?php endif ?>
 
 
       <div class="divider"><span>or</span></div>

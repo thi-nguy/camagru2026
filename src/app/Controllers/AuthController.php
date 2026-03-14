@@ -1,7 +1,5 @@
 <?php
 
-
-
 class AuthController {
     public function __construct(private UserModel $userModel) {}
 
@@ -44,7 +42,6 @@ class AuthController {
             $errors['email'] = 'Email is invalid';
         } elseif(strlen($email) > 255){
             $errors['email'] = 'Email is too long';
-
         }
 
         if (!$password ) {
@@ -117,7 +114,7 @@ class AuthController {
                 } else {
                     http_response_code(404);
                     $flash['warning'] = 'Your confirm link does not exist.';
-                    redirect("/login");
+                    redirect("/expired-token");
                 }
             } else {
                 http_response_code(400);
@@ -135,5 +132,50 @@ class AuthController {
 
     public function showExpiredToken() {
         render("expiredTokenView");
+    }
+
+    public function resendToken() { // ! Todo: flash message (bug when new token created and come back to the same page -> still got flash message from before?!)
+        $this->_init_flash();
+        $flash = &$_SESSION['flash'];
+        $errors = &$flash['errors'];
+
+        $email = $_POST['email'] ?? '';
+
+        if (!$email) {
+            $errors['email'] = 'Email is required';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Email is invalid';
+        } elseif(strlen($email) > 255){
+            $errors['email'] = 'Email is too long';
+        }
+
+        if (!empty($errors)) {
+            $flash['old'] = $_POST;
+            redirect("/expired-token");
+        }
+
+        try {
+            $existUser = $this->userModel->insertNewToken($email);
+            $flash['success']['recreateToken'] = 'A new token has been created';
+            $isEmailSent = sendConfirmEmail($email, $existUser['username'], $existUser['confirm_token']);
+            if ($isEmailSent) {
+                $flash['info'] = 'An email with a new token has been sent to you. Please check your inbox';
+            } else {
+                error_log("Problem while sending a new token to user's email: " . $email);
+                $flash['warning'] = 'Can not send new token to your email.';
+            }
+            $flash['old'] = [];
+            redirect('/expired-token');
+        } catch (UserNotFoundException $e) {
+            error_log("DB Error: " . $e->getMessage());
+            $flash['warning'] = 'Your account does not exist, please Sign Up.';
+            $flash['old'] = $_POST;
+            redirect("/expired-token");
+        } catch (DatabaseException $e) {
+            error_log("DB Error: " . $e->getMessage());
+            $flash['warning'] = 'Unable to create new confirm link';
+            $flash['old'] = $_POST;
+            redirect("/expired-token");
+        }
     }
 }
