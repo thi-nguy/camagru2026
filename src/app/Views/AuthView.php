@@ -10,6 +10,18 @@
 
       <!-- LOGIN FORM -->
       <form class="auth-form <?= $activeTab === 'login' ? 'active' : '' ?>" id="formLogin" onsubmit="return submitLogin(event)">
+
+        <?php if ($msg = success('confirmEmail')): ?>
+          <div class="msg success" id="confirmEmailSuccess">
+            <span>✓ </span><?= $msg ?>
+          </div>
+        <?php endif ?>
+        <?php if ($msg = flashMessage('warning')): ?>
+          <div class="msg fail" id="registerFail">
+            <?= $msg ?>
+          </div>
+        <?php endif ?>
+
         <div class="input-group">
           <label class="input-label" for="loginUser">Username</label>
           <input class="input-field" id="loginUser" type="text" placeholder="your_username" autocomplete="username">
@@ -20,9 +32,9 @@
         </div>
         <a class="forgot-link" href="#">Forgot password?</a>
         <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center;padding:11px">Sign In</button>
-        <div class="success-msg" id="loginSuccess">
+        <!-- <div class="success-msg" id="loginSuccess">
           <span>✓</span> Logged in successfully!
-        </div>
+        </div> -->
       </form>
 
       <!-- REGISTER FORM -->
@@ -86,19 +98,19 @@
 </div>
         <button class="btn btn-primary" type="submit" id="registerBtn" disabled style="width:100%;justify-content:center;padding:11px">Create Account</button>
        
-        <?php if ($msg = flashMessage('success')): ?>
-            <div class="msg success" id="registerSuccess">
-              <span>✓ </span><?= $msg ?>
+        <?php if ($msg = success('accountCreated')): ?>
+          <div class="msg success" id="registerSuccess">
+            <span>✓ </span><?= $msg ?>
           </div>
         <?php endif ?>
         <?php if ($msg = flashMessage('info')): ?>
-            <div class="msg success" id="sentEmailSuccess">
-              <span>✓ </span><?= $msg ?>
+          <div class="msg success" id="sentEmailSuccess">
+            <span>✓ </span><?= $msg ?>
           </div>
         <?php endif ?>
         <?php if ($msg = flashMessage('warning')): ?>
-            <div class="msg fail" id="registerFail">
-              <?= $msg ?>
+          <div class="msg fail" id="registerFail">
+            <?= $msg ?>
           </div>
         <?php endif ?>
       </form>

@@ -53,7 +53,7 @@ class UserModel {
 
     public function confirmUser(string $id) {
         try {
-            $stmt = $this->db->prepare("UPDATE users SET confirm_token = NULL, confirm_token_expires_at = NULL, is_confirmed = 1, account_status='active' WHERE id = :userId");
+            $stmt = $this->db->prepare("UPDATE users SET is_confirmed = 1, account_status='active' WHERE id = :userId");
             $stmt->execute([':userId' => $id]);
         } catch (PDOException $e) {
             error_log("DB Error: " . $e->getMessage());

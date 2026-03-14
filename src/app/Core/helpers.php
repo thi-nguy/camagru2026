@@ -45,6 +45,13 @@ function error($key) {
     return  $flashMsg;
 }
 
+function success($key) {
+    if (! isset($_SESSION['flash']['success'][$key])) return null;
+    $flashMsg = htmlspecialchars($_SESSION['flash']['success'][$key]);
+    unset($_SESSION['flash']['success'][$key]);
+    return  $flashMsg;
+}
+
 function redirect(string $url) {
     header('Location: ' . $url);
     exit();
