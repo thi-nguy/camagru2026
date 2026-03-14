@@ -4,12 +4,12 @@
       <div class="auth-logo">Camagru</div>
 
       <div class="tab-row">
-        <button class="tab-btn" id="tabLogin" onclick="switchTab('login')">Sign In</button>
-        <button class="tab-btn active" id="tabRegister" onclick="switchTab('register')">Register</button>
+        <button class="tab-btn <?= $activeTab === 'login' ? 'active' : '' ?>" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+        <button class="tab-btn <?= $activeTab === 'register' ? 'active' : '' ?>" id="tabRegister" onclick="switchTab('register')">Register</button>
       </div>
 
       <!-- LOGIN FORM -->
-      <form class="auth-form" id="formLogin" onsubmit="return submitLogin(event)">
+      <form class="auth-form <?= $activeTab === 'login' ? 'active' : '' ?>" id="formLogin" onsubmit="return submitLogin(event)">
         <div class="input-group">
           <label class="input-label" for="loginUser">Username</label>
           <input class="input-field" id="loginUser" type="text" placeholder="your_username" autocomplete="username">
@@ -26,7 +26,7 @@
       </form>
 
       <!-- REGISTER FORM -->
-      <form class="auth-form active" id="formRegister" method="POST" action="/register">
+      <form class="auth-form <?= $activeTab === 'register' ? 'active' : '' ?>" id="formRegister" method="POST" action="/register">
         <div class="input-group">
           <label class="input-label" for="regUser">Username</label>
           <input 

@@ -6,7 +6,7 @@ class AuthController {
     public function __construct(private UserModel $userModel) {}
 
     public function showRegister() {
-        render("AuthView");
+        render("AuthView", ['activeTab' => 'register']);
     }
 
     public function register() {
@@ -124,8 +124,7 @@ class AuthController {
         }
     }
 
-    public function login() {
-        echo $_SESSION['confirmOk'];
-        echo "You're at login page";
+    public function showLogin() {
+        render("AuthView", ['activeTab' => 'login']);
     }
 }
