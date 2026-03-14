@@ -108,8 +108,7 @@ class AuthController {
                         } else {
                             $this->userModel->removeConfirmToken($existUser['id']);
                             $flash['warning'] = 'Your confirm link is expired.';
-                            // ! Todo: Button Resend confirmation email (new token will be created)
-                            redirect("/resend-token");
+                            redirect("/expired-token");
                         }
                     } else {
                         $flash['warning'] = 'You have already confirmed your email. You can login now.';
@@ -132,5 +131,9 @@ class AuthController {
 
     public function showLogin() {
         render("AuthView", ['activeTab' => 'login']);
+    }
+
+    public function showExpiredToken() {
+        render("expiredTokenView");
     }
 }
