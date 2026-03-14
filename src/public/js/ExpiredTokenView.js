@@ -18,3 +18,7 @@ function validateEmail() {
     btn.disabled = !valid;
     btn.style.cursor = valid ? "pointer" : "not-allowed";
   }
+
+  function goLogIn() {
+    window.location.href = '/login';
+  }

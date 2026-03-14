@@ -61,7 +61,7 @@
 
       <div class="divider"><span>or</span></div>
 
-      <button class="back-link" onclick="goHome()">
+      <button class="back-link" onclick="goLogIn()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
         Back to sign in
       </button>
