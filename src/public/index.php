@@ -2,6 +2,7 @@
 session_start();
 
 require __DIR__ . '/../app/Core/helpers.php';
+require __DIR__ . '/../app/Core/exceptions.php';
 
 spl_autoload_register(function (string $className): void {
     $folders = [

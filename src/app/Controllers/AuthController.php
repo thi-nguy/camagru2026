@@ -1,6 +1,7 @@
 <?php
 
 
+
 class AuthController {
     public function __construct(private UserModel $userModel) {}
 
@@ -9,48 +10,78 @@ class AuthController {
     }
 
     public function register() {
+        if (!isset($_SESSION['flash'])) {
+            $_SESSION['flash'] = [
+                'errors' => [],
+                'old' => [],
+                'success' => null,
+                'info' => null,
+                'warning' => null,
+            ];
+        }
+        $flash = &$_SESSION['flash'];
+        $flash['errors'] = []; 
+        $errors = &$flash['errors'];
+
         $username = $_POST['username'] ?? '';
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
-        if (!$username ) {
-            $_SESSION['serverErrUser'] = 'Username is required';
-            redirect("/register");
+        if (!$username) {
+            $errors['username'] = 'Username is required';
         } elseif (strlen($username) < 3) {
-            $_SESSION['serverErrUser'] = 'Username must be at least 3 characters';
-            redirect("/register");
+            $errors['username'] = 'Username must be at least 3 characters';
         }
+
         if (!$email) {
-            $_SESSION['serverErrEmail'] = 'Email is required';
-            redirect("/register");
+            $errors['email'] = 'Email is required';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            redirect("/register");
+            $errors['email'] = 'Email is invalid';
         }
+
         if (!$password ) {
-            $_SESSION['serverErrPass'] = 'Password is required';
-            redirect("/register");
+            $errors['password'] = 'Password is required';
         } elseif (strlen($password) < 8) {
-            $_SESSION['serverErrPass'] = 'Password must be at least 8 characters';
+            $errors['password'] = 'Password must be at least 8 characters';
+        }
+
+        if (!empty($errors)) {
+            $flash['old'] = $_POST;
             redirect("/register");
         }
 
-        $existUser = $this->userModel->findByEmailOrUsername($email, $username);
-
-        if ($existUser) {
-            $_SESSION['duplicateUserErr'] = 'Username or Email already used';
-            redirect("/register");
-        }
         try {
-            if ($this->userModel->insertNewUser($username, $email, $password) > 0) {
-                
-                redirect("/register");
+            $tokenGenerated = $this->userModel->insertNewUser($username, $email, $password);
+            $flash['success'] = 'Your account has been created';
+            $isEmailSent = sendConfirmEmail($email, $username, $tokenGenerated);
+            if ($isEmailSent) {
+                $flash['info'] = 'A confirmation email has been sent to you. Please check your inbox';
             } else {
-                $_SESSION['createAccountNotOk'] = 'No new account is created';
-                redirect("/register");
+                error_log("Problem while sending confirm email to user's email: " . $email);
+                $flash['warning'] = 'Can not send confirm email';
             }
-        } catch (PDOException $e) {
+            $flash['old'] = [];
+            redirect('/register');
+
+        } catch (DuplicateEmailException $e) {
             error_log("DB Error: " . $e->getMessage());
-            $_SESSION['createAccountNotOk'] = 'Unable to create new account';
+            $flash['warning'] = 'Email already used';
+            $flash['old'] = $_POST;
+            redirect("/register");
+        } catch (DuplicateUsernameException $e) {
+            error_log("DB Error: " . $e->getMessage());
+            $flash['warning'] = 'Username already used';
+            $flash['old'] = $_POST;
+            redirect("/register");
+        } catch (DuplicateEntryException $e) {
+            error_log("DB Error: " . $e->getMessage());
+            $flash['warning'] = 'Unable to create new account';
+            $flash['old'] = $_POST;
+            redirect("/register");
+        } catch (DatabaseException $e) {
+            error_log("DB Error: " . $e->getMessage());
+            $flash['warning'] = 'Unable to create new account';
+            $flash['old'] = $_POST;
             redirect("/register");
         }
     }
@@ -67,10 +98,9 @@ class AuthController {
                         if ($expireDate > $today) {
                             $this->userModel->confirmUser($existUser['id']);
                             $_SESSION['confirmOk'] = 'Successfully confirm your account. You can login now.';
-                            redirect("/register");
+                            redirect("/login");
                         } else {
                             $this->userModel->removeConfirmToken($existUser['id']);
-                            http_response_code(410);
                             $_SESSION['expiredConfirmLink'] = 'Your confirm link is expired.';
                             // Todo: Button Resend confirmation email (new token will be created)
                             redirect("/register");
@@ -92,5 +122,10 @@ class AuthController {
             http_response_code(404);
             exit('Token not found.');
         }
+    }
+
+    public function login() {
+        echo $_SESSION['confirmOk'];
+        echo "You're at login page";
     }
 }

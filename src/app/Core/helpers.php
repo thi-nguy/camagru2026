@@ -25,10 +25,24 @@ function loadEnv(string $path) {
 }
 
 function flashMessage(string $key): ?string {
-    if(!isset($_SESSION[$key])) return null;
-    $msg = htmlspecialchars($_SESSION[$key]);
-    unset($_SESSION[$key]);
+    if(!isset($_SESSION['flash'][$key])) return null;
+    $msg = htmlspecialchars($_SESSION['flash'][$key]);
+    unset($_SESSION['flash'][$key]);
     return $msg;
+}
+
+function old($key, $default = '') {
+    if (! isset($_SESSION['flash']['old'][$key])) return $default;
+    $oldInfo = htmlspecialchars($_SESSION['flash']['old'][$key]);
+    unset($_SESSION['flash']['old'][$key]);
+    return $oldInfo;
+}
+
+function error($key) {
+    if (! isset($_SESSION['flash']['errors'][$key])) return null;
+    $flashMsg = htmlspecialchars($_SESSION['flash']['errors'][$key]);
+    unset($_SESSION['flash']['errors'][$key]);
+    return  $flashMsg;
 }
 
 function redirect(string $url) {

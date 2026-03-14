@@ -3,7 +3,7 @@
 class UserModel {
     public function __construct(private PDO $db) {}
 
-    public function insertNewUser($username, $email, $password) {
+    public function insertNewUser($username, $email, $password): string {
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
         $confirmToken = bin2hex(random_bytes(32));
         $confirmTokenExpireAt = date("Y-m-d H:i:s", time() + 3 * 86400);
@@ -11,29 +11,30 @@ class UserModel {
         $uuid = bin2hex(random_bytes(16));
         $uuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($uuid, 4));
 
-        $stmt = $this->db->prepare("INSERT INTO users (id, username, email, password_hash, confirm_token, confirm_token_expires_at) VALUES (:uuid, :username, :email, :password_hash, :confirm_token, :confirm_token_expires_at)");
-        $stmt->execute([
-            ':uuid'          => $uuid,
-            ':username'      => $username,
-            ':email'         => $email,
-            ':password_hash' => $hashPass,
-            ':confirm_token' => $confirmToken,
-            ':confirm_token_expires_at' => $confirmTokenExpireAt        
-        ]);
-
-        $_SESSION['createAccountOk'] = 'Your account has been created';
-
-        $sent = sendConfirmEmail($email, $username, $confirmToken);
-        if (!$sent) {
-            error_log("Problem while sending confirm email to user ID: " . $uuid);
-            $_SESSION['createAccountNotOk'] = 'Can not send confirm email';
-        } else {
-            $_SESSION['createAccountOk'] .= '. A confirmation email has been sent to you';
+        try {
+            $stmt = $this->db->prepare("INSERT INTO users (id, username, email, password_hash, confirm_token, confirm_token_expires_at) VALUES (:uuid, :username, :email, :password_hash, :confirm_token, :confirm_token_expires_at)");
+            $stmt->execute([
+                ':uuid'          => $uuid,
+                ':username'      => $username,
+                ':email'         => $email,
+                ':password_hash' => $hashPass,
+                ':confirm_token' => $confirmToken,
+                ':confirm_token_expires_at' => $confirmTokenExpireAt        
+            ]);
+            return $confirmToken;
+        } catch (PDOException $e) {
+            $message = $e->getMessage();
+            if ($e->getCode() === '23000') {
+                if (str_contains($message, 'users.email')) {
+                    throw new DuplicateEmailException("Email is already exist: $email");
+                }
+                if (str_contains($message, 'users.username')) {
+                    throw new DuplicateUsernameException("Username is already exist: $username");
+                }
+                throw new DuplicateEntryException("Duplicated Entry");
+            }
+            throw new DatabaseException("Database Error: " . $message);
         }
-
-        $_SESSION['createAccountOk'] = 'Your account has been created';
-
-        return $stmt->rowCount();
     }
 
     public function findByEmailOrUsername(string $email, string $username) {
@@ -55,7 +56,7 @@ class UserModel {
             $stmt = $this->db->prepare("UPDATE users SET confirm_token = NULL, confirm_token_expires_at = NULL, is_confirmed = 1, account_status='active' WHERE id = :userId");
             $stmt->execute([':userId' => $id]);
         } catch (PDOException $e) {
-            error_log("DB Error: ", $e->getMessage());
+            error_log("DB Error: " . $e->getMessage());
         }
     }
 
@@ -64,7 +65,7 @@ class UserModel {
             $stmt = $this->db->prepare("UPDATE users SET confirm_token = NULL WHERE id = :userId");
             $stmt->execute([':userId' => $id]);
         } catch (PDOException $e) {
-            error_log("DB Error: ", $e->getMessage());
+            error_log("DB Error: " . $e->getMessage());
         }
     }
 }
