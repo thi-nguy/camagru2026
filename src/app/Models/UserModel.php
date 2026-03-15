@@ -67,6 +67,12 @@ class UserModel {
         $existUser = $stmt->fetch();
         return $existUser;
     }
+    public function findByUsername(string $username) {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
+        $stmt->execute([':username' => $username]);
+        $existUser = $stmt->fetch();
+        return $existUser;
+    }
 
     public function findByEmailOrUsername(string $email, string $username) {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username OR email = :email");

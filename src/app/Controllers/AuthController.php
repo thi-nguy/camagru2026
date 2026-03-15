@@ -3,24 +3,12 @@
 class AuthController {
     public function __construct(private UserModel $userModel) {}
 
-    private function _init_flash() {
-        if (!isset($_SESSION['flash'])) {
-            $_SESSION['flash'] = [
-                'errors' => [],
-                'old' => [],
-                'success' => [],
-                'info' => null,
-                'warning' => null,
-            ];
-        }        
-    }
-
     public function showRegister() {
         render("AuthView", ['activeTab' => 'register']);
     }
 
     public function register() {
-        $this->_init_flash();
+        init_flash();
         $flash = &$_SESSION['flash'];
         $errors = &$flash['errors'];
 
@@ -87,7 +75,7 @@ class AuthController {
     }
 
     public function confirmEmail() {
-        $this->_init_flash();
+        init_flash();
         $flash = &$_SESSION['flash'];
 
         if (isset($_GET['token'])) {
@@ -126,16 +114,12 @@ class AuthController {
         }
     }
 
-    public function showLogin() {
-        render("AuthView", ['activeTab' => 'login']);
-    }
-
     public function showExpiredToken() {
         render("expiredTokenView");
     }
 
     public function resendToken() { // ! Todo: flash message (bug when new token created and come back to the same page -> still got flash message from before?!)
-        $this->_init_flash();
+        init_flash();
         $flash = &$_SESSION['flash'];
         $errors = &$flash['errors'];
 
@@ -178,4 +162,43 @@ class AuthController {
             redirect("/expired-token");
         }
     }
+
+    public function showLogin() {
+        if (!isset($_SESSION['csrfToken'])) {
+            $csrfToken = bin2hex(random_bytes(32));
+            $_SESSION['csrfToken'] = $csrfToken;
+        }
+        render("AuthView", ['activeTab' => 'login', 'csrfToken' => $_SESSION['csrfToken']]);
+    }
+
+    public function handleLogin() {
+        init_flash();
+        $flash = &$_SESSION['flash'];
+        $errors = &$flash['errors'];
+
+        if (!hash_equals($_POST['csrfToken'] ?? '', $_SESSION['csrfToken'])) {
+            http_response_code(403);
+            exit();
+        } 
+        $existUser = $this->userModel->findByUsername($_POST['username']);
+        if (!$existUser) {
+            $errors['login'] = "Invalid username or password.";
+            redirect('/login');
+        } 
+        if (!password_verify($_POST['password'], $existUser['password_hash'])) {
+            $errors['login'] = "Invalid username or password.";
+            redirect('/login');
+        }
+        if ($existUser['account_status'] !== 'active') {
+            $flash['warning'] = 'Account not verified. Please check your email.';
+            redirect('/login');
+        } 
+        session_regenerate_id(true);
+        $_SESSION['id'] = $existUser['id'];
+        unset($_SESSION['csrfToken']);
+        $flash['success']['login'] = "Logged in successfully!";
+        redirect('/gallery');
+    }
+
+    
 }

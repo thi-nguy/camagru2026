@@ -9,7 +9,7 @@
       </div>
 
       <!-- LOGIN FORM -->
-      <form class="auth-form <?= $activeTab === 'login' ? 'active' : '' ?>" id="formLogin" onsubmit="return submitLogin(event)">
+      <form class="auth-form <?= $activeTab === 'login' ? 'active' : '' ?>" id="formLogin" method="POST" action="/login">
 
         <?php if ($msg = success('confirmEmail')): ?>
           <div class="msg success" id="confirmEmailSuccess">
@@ -21,15 +21,42 @@
             <?= $msg ?>
           </div>
         <?php endif ?>
+        <?php if ($msg = error('login')): ?>
+          <div class="msg fail" id="loginFail">
+            <?= $msg ?>
+          </div>
+        <?php endif ?>
 
+        <input type="hidden" name="csrfToken" value="<?= htmlspecialchars($csrfToken) ?>">
         <div class="input-group">
           <label class="input-label" for="loginUser">Username</label>
-          <input class="input-field" id="loginUser" type="text" placeholder="your_username" autocomplete="username">
+          <input class="input-field" id="loginUser" name="username" type="text" placeholder="your_username" autocomplete="username">
         </div>
         <div class="input-group">
           <label class="input-label" for="loginPass">Password</label>
-          <input class="input-field" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password">
-        </div>
+          <div class="input-wrapper">
+          <input 
+            class="input-field" 
+            id="loginPass" 
+            name="password" 
+            type="password" 
+            placeholder=".........." autocomplete="current-password" 
+          >
+          <button type="button" class="toggle-password" onclick="togglePassword('loginPass', this)" aria-label="Show password" tabindex="-1">
+            <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      <svg class="eye-off-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+        <line x1="1" y1="1" x2="23" y2="23"/>
+      </svg>
+    </button>
+  </div>
+  <span class="field-error" id="errPass">
+    <?= error('password')?></span>
+</div>
         <a class="forgot-link" href="#">Forgot password?</a>
         <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center;padding:11px">Sign In</button>
         <!-- <div class="success-msg" id="loginSuccess">

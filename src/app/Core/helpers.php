@@ -92,3 +92,15 @@ function sendConfirmEmail(string $toEmail, string $toName, string $token): bool 
 
    return $result;
 }
+
+function init_flash() {
+    if (!isset($_SESSION['flash'])) {
+        $_SESSION['flash'] = [
+            'errors' => [],
+            'old' => [],
+            'success' => [],
+            'info' => null,
+            'warning' => null,
+        ];
+    }        
+}
