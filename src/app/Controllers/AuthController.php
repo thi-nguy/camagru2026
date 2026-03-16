@@ -164,7 +164,7 @@ class AuthController {
     }
 
     public function showLogin() {
-        if (!isset($_SESSION['csrfToken'])) {
+        if (!isset($_SESSION['csrfToken'])) { //isset: handle null case or key non exist
             $csrfToken = bin2hex(random_bytes(32));
             $_SESSION['csrfToken'] = $csrfToken;
         }
@@ -176,28 +176,52 @@ class AuthController {
         $flash = &$_SESSION['flash'];
         $errors = &$flash['errors'];
 
-        if (!hash_equals($_POST['csrfToken'] ?? '', $_SESSION['csrfToken'])) {
+        if (!isset($_SESSION['csrfToken'])) {
+            http_response_code(403);
+            exit();
+        }
+        if (!hash_equals($_SESSION['csrfToken'], $_POST['csrfToken'] ?? '')) {
             http_response_code(403);
             exit();
         } 
-        $existUser = $this->userModel->findByUsername($_POST['username']);
-        if (!$existUser) {
-            $errors['login'] = "Invalid username or password.";
-            redirect('/login');
-        } 
-        if (!password_verify($_POST['password'], $existUser['password_hash'])) {
-            $errors['login'] = "Invalid username or password.";
+        $username = trim($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
+
+        if (empty($username) || empty($password)) {
+            $errors['login'] = "Please fill in all fields.";
             redirect('/login');
         }
-        if ($existUser['account_status'] !== 'active') {
-            $flash['warning'] = 'Account not verified. Please check your email.';
+        $existUser = $this->userModel->findByUsername($username);
+        $hash = $existUser ? $existUser['password_hash'] : '$2y$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ01234';
+        $passwordOk = password_verify($password, $hash);
+        if (!$existUser || !$passwordOk || $existUser['account_status'] !== 'active') {
+            $errors['login'] = "Invalid username or password.";
             redirect('/login');
         } 
         session_regenerate_id(true);
         $_SESSION['id'] = $existUser['id'];
         unset($_SESSION['csrfToken']);
+        $_SESSION['csrfToken'] = bin2hex(random_bytes(32));
         $flash['success']['login'] = "Logged in successfully!";
+        session_write_close(); 
         redirect('/gallery');
+    }
+
+    public function handleLogout() {
+        if (!isset($_SESSION['csrfToken'])) {
+            http_response_code(403);
+            exit();
+        }
+        if (!hash_equals($_SESSION['csrfToken'], $_POST['csrfToken'] ?? '')) {
+            http_response_code(403);
+            exit();
+        } 
+        $_SESSION = [];
+        session_destroy();
+        if(isset($_COOKIE[session_name()])) {
+            setcookie(session_name(), '', time() - 3600, '/');
+        }
+        redirect('/login');
     }
 
     

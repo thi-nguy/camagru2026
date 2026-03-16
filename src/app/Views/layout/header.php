@@ -17,7 +17,10 @@
     <button class="btn btn-ghost btn-sm" onclick="navTo('gallery')" id="navGallery">Gallery</button>
     <button class="btn btn-primary btn-sm" onclick="navTo('editor')" id="navEditor" style="display:none">Editor</button>
     <button class="btn btn-ghost btn-sm" onclick="navTo('auth')" id="navAuth">Sign In</button>
-    <button class="btn btn-danger btn-sm" onclick="logout()" id="navLogout" style="display:none">Log Out</button>
+    <form method="POST" action="/logout" style="display:inline" id="navLogoutForm">
+  <input type="hidden" name="csrfToken" value="<?= htmlspecialchars($_SESSION['csrfToken']) ?>">
+  <button type="submit" class="btn btn-danger btn-sm" id="navLogout">Log Out</button>
+</form>
   </nav>
   <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileMenu()">
     <span></span><span></span><span></span>
@@ -29,5 +32,9 @@
   <button class="btn btn-ghost" onclick="navTo('gallery');toggleMobileMenu()">Gallery</button>
   <button class="btn btn-primary" onclick="navTo('editor');toggleMobileMenu()" id="mNavEditor" style="display:none">Editor</button>
   <button class="btn btn-ghost" onclick="navTo('auth');toggleMobileMenu()" id="mNavAuth">Sign In</button>
+  <form method="POST" action="/logout" style="display:inline" id="navLogoutForm">
+  <input type="hidden" name="csrfToken" value="<?= htmlspecialchars($_SESSION['csrfToken']) ?>">
+  <button type="submit" class="btn btn-danger" id="navLogout" style="display:none">Log Out</button>
+</form>
   <button class="btn btn-danger" onclick="logout();toggleMobileMenu()" id="mNavLogout" style="display:none">Log Out</button>
 </div>
