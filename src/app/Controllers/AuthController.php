@@ -171,6 +171,8 @@ class AuthController {
         render("AuthView", ['activeTab' => 'login', 'csrfToken' => $_SESSION['csrfToken']]);
     }
 
+    // Todo - Nice to have in handleLogin(): 1) Rate limiting / lockout after N fail password tries. 2) Log failed login attempts to detect brute force.
+
     public function handleLogin() {
         init_flash();
         $flash = &$_SESSION['flash'];
@@ -203,6 +205,12 @@ class AuthController {
         unset($_SESSION['csrfToken']);
         $_SESSION['csrfToken'] = bin2hex(random_bytes(32));
         $flash['success']['login'] = "Logged in successfully!";
+        if (isset($_SESSION['requestUri'])) {
+            $requestUri = $_SESSION['requestUri'];
+            unset($_SESSION['requestUri']);
+            session_write_close(); 
+            redirect($requestUri);
+        }
         session_write_close(); 
         redirect('/gallery');
     }
