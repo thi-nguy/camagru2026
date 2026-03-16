@@ -230,7 +230,8 @@ class AuthController {
             setcookie(session_name(), '', time() - 3600, '/');
         }
         redirect('/login');
-    }
 
-    
+    public function showResetPassword() {
+        render("ResetPassView");
+    }
 }
