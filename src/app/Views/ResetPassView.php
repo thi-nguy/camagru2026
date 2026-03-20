@@ -13,7 +13,7 @@
     <!-- ══════════════════════════════════════
          STEP 1 — Request reset
     ══════════════════════════════════════ -->
-    <div class="step " id="step1">
+    <div class="step active " id="step1">
       <div class="step-icon-wrap blue">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0095F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -177,7 +177,7 @@
     <!-- ══════════════════════════════════════
          STEP 4 — All done
     ══════════════════════════════════════ -->
-    <div class="step active" id="step4">
+    <div class="step" id="step4">
       <div class="step-icon-wrap green" style="background:linear-gradient(135deg,#f0fff4,#dcfce7)">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>

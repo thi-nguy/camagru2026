@@ -7,12 +7,11 @@ CREATE TABLE users (
     bio                         TEXT,
     created_at                  TIMESTAMP                               DEFAULT CURRENT_TIMESTAMP,
     confirm_token               VARCHAR(64)                             DEFAULT NULL UNIQUE,
-    confirm_token_expires_at    TIMESTAMP,
+    confirm_token_expires_at    TIMESTAMP                               DEFAULT NULL,
     is_confirmed                BOOLEAN                                 DEFAULT FALSE,
     reset_token                 VARCHAR(64)                             DEFAULT NULL UNIQUE,
-    reset_token_expires_at      TIMESTAMP,
+    reset_token_expires_at      TIMESTAMP                               DEFAULT NULL,
     email_notifications         BOOLEAN                                 DEFAULT TRUE,
-    account_status              ENUM('pending', 'active', 'banned')     DEFAULT 'pending'
 );
 
 CREATE TABLE photos (
@@ -22,7 +21,9 @@ CREATE TABLE photos (
     caption         TEXT,
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) 
+        REFERENCES users(id) 
+        ON DELETE CASCADE
 );
 
 CREATE TABLE likes (
@@ -30,8 +31,12 @@ CREATE TABLE likes (
     photo_id        CHAR(36)        NOT NULL,
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (photo_id) REFERENCES photos(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) 
+        REFERENCES users(id) 
+        ON DELETE CASCADE,
+    FOREIGN KEY (photo_id) 
+        REFERENCES photos(id) 
+        ON DELETE CASCADE,
 
     PRIMARY KEY (user_id, photo_id)
 );
@@ -43,6 +48,10 @@ CREATE TABLE comments (
     content         TEXT            NOT NULL,
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (photo_id) REFERENCES photos(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) 
+        REFERENCES users(id) 
+        ON DELETE CASCADE,
+    FOREIGN KEY (photo_id) 
+        REFERENCES photos(id) 
+        ON DELETE CASCADE
 );

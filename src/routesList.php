@@ -8,4 +8,4 @@ $router->addRoute('POST', '/logout', $authController, 'handleLogout');
 $router->addRoute('GET', '/confirm', $authController, 'confirmEmail', false);
 $router->addRoute('GET', '/expired-token', $authController, 'showExpiredToken', false);
 $router->addRoute('POST', '/expired-token', $authController, 'resendToken', false);
-$router->addRoute('GET', '/reset-password', $authController, 'showResetPassword');
+$router->addRoute('GET', '/reset-password', $authController, 'showResetPassword', false);

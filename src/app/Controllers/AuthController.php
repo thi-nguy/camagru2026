@@ -196,7 +196,7 @@ class AuthController {
         $existUser = $this->userModel->findByUsername($username);
         $hash = $existUser ? $existUser['password_hash'] : '$2y$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ01234';
         $passwordOk = password_verify($password, $hash);
-        if (!$existUser || !$passwordOk || $existUser['account_status'] !== 'active') {
+        if (!$existUser || !$passwordOk || $existUser['is_confirmed'] != 1) {
             $errors['login'] = "Invalid username or password.";
             redirect('/login');
         } 
@@ -230,6 +230,7 @@ class AuthController {
             setcookie(session_name(), '', time() - 3600, '/');
         }
         redirect('/login');
+    }
 
     public function showResetPassword() {
         render("ResetPassView");
