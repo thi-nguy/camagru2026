@@ -3,17 +3,10 @@
   <div class="auth-card">
     <div class="auth-logo">Camagru</div>
 
-    <!-- Step indicator -->
-    <div class="step-indicator" id="stepIndicator">
-      <div class="step-dot active" id="dot1"></div>
-      <div class="step-dot" id="dot2"></div>
-      <div class="step-dot" id="dot3"></div>
-    </div>
-
     <!-- ══════════════════════════════════════
          STEP 1 — Request reset
     ══════════════════════════════════════ -->
-    <div class="step active " id="step1">
+    <div class="step " id="step1">
       <div class="step-icon-wrap blue">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0095F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -60,7 +53,7 @@
     <!-- ══════════════════════════════════════
          STEP 2 — Email sent
     ══════════════════════════════════════ -->
-    <div class="step " id="step2">
+    <div class="step" id="step2">
       <div class="step-icon-wrap green">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.1 3.4 2 2 0 0 1 3.07 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 5.99 5.99l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16z"/>
@@ -129,43 +122,6 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" id="eyeIcon1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
-        <div class="strength-bar-wrap"><div class="strength-bar" id="strengthBar"></div></div>
-        <div class="strength-row">
-          <span class="strength-label" id="strengthLabel">Enter a password</span>
-        </div>
-        <div class="strength-reqs" id="strengthReqs">
-          <div class="req-item" id="req-len">
-            <div class="req-dot">✓</div>
-            <span>At least 8 characters</span>
-          </div>
-          <div class="req-item" id="req-upper">
-            <div class="req-dot">✓</div>
-            <span>One uppercase letter</span>
-          </div>
-          <div class="req-item" id="req-num">
-            <div class="req-dot">✓</div>
-            <span>One number</span>
-          </div>
-          <div class="req-item" id="req-special">
-            <div class="req-dot">✓</div>
-            <span>One special character</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label" for="confirmPass">Confirm New Password</label>
-        <div class="input-wrapper">
-          <span class="input-icon">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </span>
-          <input class="input-field" id="confirmPass" type="password" placeholder="Repeat your password" autocomplete="new-password" oninput="onConfirmInput(this.value)">
-          <button class="toggle-pass" onclick="togglePass('confirmPass', this)" tabindex="-1" type="button" aria-label="Show password">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" id="eyeIcon2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-        </div>
-        <div class="input-hint err" id="matchErr">Passwords do not match.</div>
-        <div class="input-hint" id="matchOk" style="display:none;color:var(--success);font-weight:500">✓ Passwords match</div>
       </div>
 
       <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px;margin-top:4px" onclick="submitStep3()" id="step3Btn" disabled>
@@ -177,7 +133,7 @@
     <!-- ══════════════════════════════════════
          STEP 4 — All done
     ══════════════════════════════════════ -->
-    <div class="step" id="step4">
+    <div class="step active" id="step4">
       <div class="step-icon-wrap green" style="background:linear-gradient(135deg,#f0fff4,#dcfce7)">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>

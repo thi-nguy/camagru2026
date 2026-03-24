@@ -5,13 +5,12 @@ CREATE TABLE users (
     password_hash               VARCHAR(255)                            NOT NULL,
     avatar                      VARCHAR(255),
     bio                         TEXT,
-    created_at                  TIMESTAMP                               DEFAULT CURRENT_TIMESTAMP,
     confirm_token               VARCHAR(64)                             DEFAULT NULL UNIQUE,
     confirm_token_expires_at    TIMESTAMP                               DEFAULT NULL,
     is_confirmed                BOOLEAN                                 DEFAULT FALSE,
     reset_token                 VARCHAR(64)                             DEFAULT NULL UNIQUE,
     reset_token_expires_at      TIMESTAMP                               DEFAULT NULL,
-    email_notifications         BOOLEAN                                 DEFAULT TRUE,
+    email_notifications         BOOLEAN                                 DEFAULT TRUE
 );
 
 CREATE TABLE photos (
