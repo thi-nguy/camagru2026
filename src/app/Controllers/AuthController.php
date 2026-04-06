@@ -4,7 +4,11 @@ class AuthController {
     public function __construct(private UserModel $userModel) {}
 
     public function showRegister() {
-        render("AuthView", ['activeTab' => 'register']);
+        if (!isset($_SESSION['csrfToken'])) { 
+            $csrfToken = bin2hex(random_bytes(32));
+            $_SESSION['csrfToken'] = $csrfToken;
+        }
+        render("AuthView", ['activeTab' => 'register', 'csrfToken' => $_SESSION['csrfToken']]);
     }
 
     public function register() {

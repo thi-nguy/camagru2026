@@ -57,8 +57,11 @@ camagru2026/
 - `docker compose up -d` — start all services in background
 - `docker compose ps` — check service status
 - `docker compose logs -f` — follow logs
+- `docker logs container_name` — follow logs of a container
 - `docker compose down` — stop services
-- `docker compose down -v` — stop and delete all data
+- `docker compose down -v` — stop and delete containers + volumes.
+- `docker compose up -d --build` - rebuild images, rebuild containers.
+
 ---
 ## Milestone
 - `docker-compose up` → open `localhost` → see "Hello World" ✓
