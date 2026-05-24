@@ -16,11 +16,6 @@
             <span>✓ </span><?= $msg ?>
           </div>
         <?php endif ?>
-        <?php if ($msg = flashMessage('warning')): ?>
-          <div class="msg fail" id="registerFail">
-            <?= $msg ?>
-          </div>
-        <?php endif ?>
         <?php if ($msg = error('login')): ?>
           <div class="msg fail" id="loginFail">
             <?= $msg ?>
