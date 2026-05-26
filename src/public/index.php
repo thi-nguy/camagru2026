@@ -22,9 +22,12 @@ spl_autoload_register(function (string $className): void {
 loadEnv(__DIR__ . '/../.env');
 
 $db = Database::getInstance();
+
 $userModel      = new UserModel($db);
 $authController = new AuthController($userModel);
-$galleryController = new GalleryController(); 
+
+$photoModel     = new PhotoModel($db);
+$galleryController = new GalleryController($photoModel);
 
 $router = new Router();
 require_once __DIR__ . '/../routesList.php';

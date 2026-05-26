@@ -19,6 +19,8 @@ CREATE TABLE photos (
     filename        VARCHAR(255)    NOT NULL UNIQUE,
     caption         TEXT,
     created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+    like_count      INT UNSIGNED    DEFAULT 0,
+    comment_count   INT UNSIGNED    DEFAULT 0,
 
     FOREIGN KEY (user_id) 
         REFERENCES users(id) 
