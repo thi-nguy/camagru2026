@@ -9,7 +9,7 @@ class PhotoModel
         $offset = ($page - 1) * $perPage;
         try {
             /* Nice to have: pagination faster with index column, keyset pagination */
-            $stmt = $this->db->prepare("SELECT p.filename, p.caption, p.created_at, p.id, p.like_count, p.comment_count, u.username FROM photos p INNER JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC LIMIT :perPage OFFSET :offset;");
+            $stmt = $this->db->prepare("SELECT p.filename, p.caption, p.created_at, p.id, p.like_count, p.comment_count, p.user_id, u.username FROM photos p INNER JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC LIMIT :perPage OFFSET :offset;");
             $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();

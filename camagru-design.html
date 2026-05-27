@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camagru — Design Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ─── DESIGN TOKENS ─── */
+  :root {
+    --bg:        #080808;
+    --surface:   #111111;
+    --card:      #181818;
+    --border:    rgba(255,255,255,0.07);
+    --gold:      #c8a97e;
+    --gold-dim:  rgba(200,169,126,0.15);
+    --gold-glow: rgba(200,169,126,0.08);
+    --text:      #ede8df;
+    --muted:     #6b6560;
+    --danger:    #e05555;
+
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-ui:      'Syne', sans-serif;
+
+    --radius:  12px;
+    --radius-sm: 6px;
+    --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── PAGE SWITCHER ─── */
+  .page { display: none; min-height: 100vh; flex-direction: column; }
+  .page.active { display: flex; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .nav-logo span { color: var(--gold); }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .nav-btn {
+    background: none; border: none; cursor: pointer;
+    font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 16px; border-radius: var(--radius-sm);
+    transition: color var(--transition), background var(--transition);
+  }
+  .nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .nav-btn.primary {
+    color: var(--bg); background: var(--gold);
+    font-weight: 600;
+  }
+  .nav-btn.primary:hover { background: #d4b88e; }
+  .nav-btn.ghost {
+    color: var(--text); border: 1px solid var(--border);
+  }
+  .nav-btn.ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ─── PAGE NAV (demo switcher) ─── */
+  .demo-bar {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    z-index: 999;
+    display: flex; gap: 6px; align-items: center;
+    background: rgba(20,20,20,0.95);
+    border: 1px solid var(--border);
+    padding: 8px 14px; border-radius: 100px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  }
+  .demo-bar span {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); padding: 0 8px 0 4px;
+    border-right: 1px solid var(--border);
+    margin-right: 4px;
+  }
+  .demo-btn {
+    background: none; border: none; cursor: pointer;
+    font-family: var(--font-ui); font-size: 12px; font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--muted); padding: 6px 14px; border-radius: 100px;
+    transition: all var(--transition);
+  }
+  .demo-btn:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .demo-btn.active { color: var(--bg); background: var(--gold); }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: var(--font-ui); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    border: none; cursor: pointer; border-radius: var(--radius-sm);
+    padding: 12px 24px; transition: all var(--transition);
+  }
+  .btn-gold { background: var(--gold); color: var(--bg); }
+  .btn-gold:hover { background: #d4b88e; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(200,169,126,0.3); }
+  .btn-outline { background: none; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-ghost { background: rgba(255,255,255,0.04); color: var(--muted); }
+  .btn-ghost:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+  .btn-danger { background: rgba(224,85,85,0.12); color: var(--danger); border: 1px solid rgba(224,85,85,0.2); }
+  .btn-danger:hover { background: rgba(224,85,85,0.2); }
+  .btn-lg { padding: 16px 36px; font-size: 14px; border-radius: var(--radius); }
+  .btn-sm { padding: 8px 16px; font-size: 12px; }
+  .btn-icon { padding: 10px; border-radius: 50%; }
+
+  /* ─── FORM ELEMENTS ─── */
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .form-input {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-family: var(--font-ui); font-size: 15px;
+    padding: 12px 16px; border-radius: var(--radius-sm);
+    transition: border-color var(--transition);
+    outline: none; width: 100%;
+  }
+  .form-input:focus { border-color: var(--gold); }
+  .form-input::placeholder { color: var(--muted); }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+
+  /* ────────────────────────────────────────────
+     PAGE 1 — GALLERY
+  ──────────────────────────────────────────── */
+  #page-gallery main {
+    flex: 1;
+    padding: 48px 40px;
+    max-width: 1280px; margin: 0 auto; width: 100%;
+  }
+
+  .gallery-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 40px;
+  }
+  .gallery-header h1 {
+    font-family: var(--font-display);
+    font-size: 52px; font-weight: 300;
+    line-height: 1;
+    color: var(--text);
+  }
+  .gallery-header h1 em { color: var(--gold); font-style: italic; }
+  .gallery-meta { font-size: 13px; color: var(--muted); }
+
+  /* Masonry-style grid */
+  .gallery-grid {
+    columns: 4; column-gap: 16px;
+  }
+  .gallery-item {
+    break-inside: avoid; margin-bottom: 16px;
+    border-radius: var(--radius); overflow: hidden;
+    position: relative; cursor: pointer;
+    border: 1px solid var(--border);
+  }
+  .gallery-item img {
+    width: 100%; display: block;
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    filter: brightness(0.9);
+  }
+  .gallery-item:hover img { transform: scale(1.03); filter: brightness(1); }
+  .gallery-item-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+    opacity: 0; transition: opacity var(--transition);
+    display: flex; flex-direction: column; justify-content: flex-end; padding: 16px;
+  }
+  .gallery-item:hover .gallery-item-overlay { opacity: 1; }
+  .gallery-item-author { font-size: 13px; font-weight: 500; color: var(--text); }
+  .gallery-item-date { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+  .gallery-item-actions {
+    display: flex; gap: 12px; margin-top: 10px; align-items: center;
+  }
+  .like-btn {
+    background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+    color: rgba(255,255,255,0.7); font-size: 12px;
+    font-family: var(--font-ui); font-weight: 500;
+    transition: color var(--transition);
+  }
+  .like-btn:hover, .like-btn.liked { color: #e05555; }
+  .like-btn svg { width: 14px; height: 14px; }
+
+  /* Pagination */
+  .pagination {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; margin-top: 56px; padding-bottom: 48px;
+  }
+  .page-num {
+    width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;
+    border: none; cursor: pointer; font-family: var(--font-ui);
+    transition: all var(--transition);
+    background: none; color: var(--muted);
+  }
+  .page-num:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+  .page-num.active { background: var(--gold); color: var(--bg); font-weight: 600; }
+
+  /* ────────────────────────────────────────────
+     PAGE 2 — IMAGE DETAIL
+  ──────────────────────────────────────────── */
+  #page-detail main {
+    flex: 1; padding: 48px 40px;
+    max-width: 1100px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: 1fr 360px; gap: 32px;
+  }
+
+  .detail-image-wrap {
+    border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .detail-image-wrap img { width: 100%; display: block; }
+  .detail-author-badge {
+    position: absolute; top: 16px; left: 16px;
+    background: rgba(8,8,8,0.8); backdrop-filter: blur(10px);
+    border: 1px solid var(--border); border-radius: 100px;
+    padding: 6px 14px 6px 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .author-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--gold-dim); border: 1px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: var(--gold); font-weight: 600;
+  }
+  .author-name { font-size: 13px; font-weight: 500; }
+
+  .detail-sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+  .detail-stats {
+    display: flex; gap: 24px; padding: 20px;
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  }
+  .stat { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .stat-num {
+    font-family: var(--font-display); font-size: 32px; font-weight: 600;
+    color: var(--gold); line-height: 1;
+  }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+
+  .comments-panel {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    display: flex; flex-direction: column; flex: 1; overflow: hidden;
+  }
+  .comments-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  }
+  .comments-list { flex: 1; padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+  .comment { display: flex; gap: 12px; }
+  .comment-body { flex: 1; }
+  .comment-meta { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .comment-meta strong { color: var(--text); margin-right: 6px; }
+  .comment-text { font-size: 14px; color: rgba(237,232,223,0.8); line-height: 1.5; }
+  .comment-form { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+  .comment-form .form-input { font-size: 14px; }
+
+  /* ────────────────────────────────────────────
+     PAGE 3 — EDITOR
+  ──────────────────────────────────────────── */
+  #page-editor main {
+    flex: 1; display: grid; grid-template-columns: 1fr 280px;
+    gap: 0;
+  }
+
+  .editor-main {
+    padding: 40px;
+    display: flex; flex-direction: column; gap: 24px;
+    border-right: 1px solid var(--border);
+  }
+  .editor-title {
+    font-family: var(--font-display); font-size: 36px; font-weight: 300;
+    color: var(--text);
+  }
+  .editor-title em { color: var(--gold); font-style: italic; }
+
+  .webcam-area {
+    position: relative; border-radius: var(--radius);
+    overflow: hidden; background: #000;
+    border: 1px solid var(--border);
+    aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .webcam-area img { width: 100%; height: 100%; object-fit: cover; }
+  .webcam-overlay-img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: contain; pointer-events: none;
+  }
+  .webcam-placeholder {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    color: var(--muted);
+  }
+  .webcam-placeholder svg { width: 48px; height: 48px; opacity: 0.4; }
+  .webcam-placeholder p { font-size: 14px; }
+
+  .editor-controls {
+    display: flex; gap: 12px; align-items: center;
+  }
+
+  .overlay-picker {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .overlay-picker-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .overlay-list {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  }
+  .overlay-opt {
+    aspect-ratio: 1; border-radius: var(--radius-sm);
+    background: var(--card); border: 2px solid var(--border);
+    cursor: pointer; overflow: hidden; transition: all var(--transition);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .overlay-opt:hover { border-color: var(--gold); }
+  .overlay-opt.selected { border-color: var(--gold); background: var(--gold-dim); }
+  .overlay-opt img { width: 80%; height: 80%; object-fit: contain; }
+
+  .editor-sidebar {
+    padding: 32px 24px;
+    display: flex; flex-direction: column; gap: 16px;
+    overflow-y: auto;
+  }
+  .sidebar-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+  }
+  .thumb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .thumb {
+    aspect-ratio: 1; border-radius: var(--radius-sm); overflow: hidden;
+    background: var(--card); border: 1px solid var(--border); position: relative;
+    cursor: pointer; transition: border-color var(--transition);
+  }
+  .thumb:hover { border-color: var(--gold); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb-delete {
+    position: absolute; top: 4px; right: 4px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(224,85,85,0.9);
+    border: none; cursor: pointer; display: none;
+    align-items: center; justify-content: center;
+    color: white; font-size: 10px;
+  }
+  .thumb:hover .thumb-delete { display: flex; }
+
+  /* ────────────────────────────────────────────
+     PAGE 4 — LOGIN / REGISTER
+  ──────────────────────────────────────────── */
+  #page-auth {
+    background:
+      radial-gradient(ellipse 60% 80% at 80% 50%, rgba(200,169,126,0.06) 0%, transparent 70%),
+      var(--bg);
+    align-items: center; justify-content: center; padding: 40px;
+  }
+  .auth-wrap {
+    display: grid; grid-template-columns: 1fr 1fr;
+    width: 100%; max-width: 900px;
+    border: 1px solid var(--border); border-radius: 20px; overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.6);
+  }
+  .auth-visual {
+    background:
+      linear-gradient(135deg, rgba(200,169,126,0.15) 0%, transparent 60%),
+      var(--card);
+    padding: 56px; display: flex; flex-direction: column; justify-content: flex-end;
+    position: relative; overflow: hidden;
+  }
+  .auth-visual-bg {
+    position: absolute; inset: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500"><circle cx="200" cy="250" r="180" fill="none" stroke="rgba(200,169,126,0.08)" stroke-width="1"/><circle cx="200" cy="250" r="130" fill="none" stroke="rgba(200,169,126,0.06)" stroke-width="1"/><circle cx="200" cy="250" r="80" fill="none" stroke="rgba(200,169,126,0.04)" stroke-width="1"/></svg>') center/cover;
+  }
+  .auth-visual-content { position: relative; }
+  .auth-visual h2 {
+    font-family: var(--font-display); font-size: 48px; font-weight: 300;
+    line-height: 1.1; margin-bottom: 16px;
+  }
+  .auth-visual h2 em { color: var(--gold); font-style: italic; display: block; }
+  .auth-visual p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  .auth-form-wrap {
+    background: var(--surface); padding: 56px 48px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .auth-tabs { display: flex; gap: 4px; margin-bottom: 36px; background: var(--card); border-radius: var(--radius-sm); padding: 4px; }
+  .auth-tab {
+    flex: 1; padding: 8px; border: none; background: none; cursor: pointer;
+    font-family: var(--font-ui); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted); border-radius: 4px; transition: all var(--transition);
+  }
+  .auth-tab.active { background: var(--gold); color: var(--bg); }
+  .auth-form { display: flex; flex-direction: column; gap: 20px; }
+  .auth-form-footer {
+    margin-top: 8px; text-align: center;
+    font-size: 13px; color: var(--muted);
+  }
+  .auth-form-footer a { color: var(--gold); text-decoration: none; }
+
+  /* ────────────────────────────────────────────
+     PAGE 5 — SETTINGS
+  ──────────────────────────────────────────── */
+  #page-settings main {
+    flex: 1; padding: 48px 40px;
+    max-width: 720px; margin: 0 auto; width: 100%;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .settings-title {
+    font-family: var(--font-display); font-size: 44px; font-weight: 300;
+    margin-bottom: 8px;
+  }
+  .settings-title em { color: var(--gold); font-style: italic; }
+  .settings-section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .settings-section-header {
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .settings-section-title {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .settings-section-body {
+    padding: 24px; display: flex; flex-direction: column; gap: 20px;
+  }
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px;
+  }
+  .settings-row-info { flex: 1; }
+  .settings-row-label { font-size: 15px; font-weight: 500; color: var(--text); }
+  .settings-row-desc { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* Toggle */
+  .toggle {
+    width: 44px; height: 24px; border-radius: 100px;
+    background: var(--border); border: none; cursor: pointer;
+    position: relative; transition: background var(--transition);
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: ''; position: absolute; width: 18px; height: 18px;
+    border-radius: 50%; background: white; top: 3px; left: 3px;
+    transition: transform var(--transition);
+  }
+  .toggle.on { background: var(--gold); }
+  .toggle.on::after { transform: translateX(20px); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: var(--font-display); font-size: 18px;
+    color: var(--muted);
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-copy { font-size: 12px; color: var(--muted); }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px; background: var(--border); margin: 4px 0;
+  }
+
+  /* ─── BADGE ─── */
+  .badge {
+    display: inline-flex; align-items: center;
+    background: var(--gold-dim); color: var(--gold);
+    border: 1px solid rgba(200,169,126,0.2);
+    border-radius: 100px; padding: 2px 10px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  /* ─── NOTIFICATION DOT ─── */
+  .notif {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold); display: inline-block; margin-left: 4px;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     PAGE: GALLERY
+════════════════════════════════════════ -->
+<div id="page-gallery" class="page active">
+  <nav>
+    <div class="nav-logo" onclick="switchPage('gallery')">Cama<span>gru</span></div>
+    <div class="nav-links">
+      <button class="nav-btn" onclick="switchPage('gallery')">Gallery</button>
+      <button class="nav-btn" onclick="switchPage('editor')">Editor</button>
+      <button class="nav-btn" onclick="switchPage('settings')">Settings</button>
+      <button class="nav-btn ghost" onclick="switchPage('auth')">Sign In</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="gallery-header">
+      <div>
+        <div class="badge" style="margin-bottom:14px">Public Gallery</div>
+        <h1>Community<br><em>Captures</em></h1>
+      </div>
+      <div class="gallery-meta">247 photos · Updated just now</div>
+    </div>
+
+    <div class="gallery-grid">
+
+      <!-- Item 1 - tall -->
+      <div class="gallery-item" onclick="switchPage('detail')" style="position:relative">
+        <div style="aspect-ratio:3/4;background:linear-gradient(135deg,#1a1a1a,#2a2020);display:flex;align-items:center;justify-content:center;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(200,169,126,0.3)" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-author">@marie_l</div>
+          <div class="gallery-item-date">2 hours ago</div>
+          <div class="gallery-item-actions">
+            <button class="like-btn liked">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              42
+            </button>
+            <button class="like-btn" style="color:rgba(255,255,255,0.7)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              8
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2 - square -->
+      <div class="gallery-item" onclick="switchPage('detail')">
+        <div style="aspect-ratio:1;background:linear-gradient(225deg,#1a201a,#101818);display:flex;align-items:center;justify-content:center;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(200,169,126,0.3)" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-author">@thomas_k</div>
+          <div class="gallery-item-date">5 hours ago</div>
+          <div class="gallery-item-actions">
+            <button class="like-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>17</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="gallery-item" onclick="switchPage('detail')">
+        <div style="aspect-ratio:3/5;background:linear-gradient(160deg,#201a20,#181020);display:flex;align-items:center;justify-content:center;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(200,169,126,0.3)" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-author">@sofia_r</div>
+          <div class="gallery-item-date">Yesterday</div>
+          <div class="gallery-item-actions">
+            <button class="like-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>91</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="gallery-item" onclick="switchPage('detail')">
+        <div style="aspect-ratio:4/3;background:linear-gradient(45deg,#1a1a10,#201a10);display:flex;align-items:center;justify-content:center;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(200,169,126,0.3)" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-author">@lucas_m</div>
+          <div class="gallery-item-date">2 days ago</div>
+          <div class="gallery-item-actions">
+            <button class="like-btn liked" style="color:#e05555"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>33</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="gallery-item" onclick="switchPage('detail')">
+        <div style="aspect-ratio:1;background:linear-gradient(200deg,#101a1a,#0a1010);display:flex;align-items:center;justify-content:center;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(200,169,126,0.3)" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-author">@nina_w</div>
+          <div class="gallery-item-date">3 days ago</div>
+          <div class="gallery-item-actions">
+            <button class="like-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>5</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-item" onclick="switchPage('detail')">
+        <div style="aspect-ratio:3/4;background:linear-gradient(100deg,#1a1510,#201a15);display:flex;align-items:center;justify-content:center;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(200,169,126,0.3)" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-author">@paul_d</div>
+          <div class="gallery-item-date">4 days ago</div>
+          <div class="gallery-item-actions">
+            <button class="like-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>28</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-item" onclick="switchPage('detail')">
+        <div style="aspect-ratio:1;background:linear-gradient(300deg,#141414,#1a1a1a);display:flex;align-items:center;justify-content:center;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(200,169,126,0.3)" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-author">@elena_v</div>
+          <div class="gallery-item-date">5 days ago</div>
+          <div class="gallery-item-actions">
+            <button class="like-btn liked" style="color:#e05555"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>64</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-item" onclick="switchPage('detail')">
+        <div style="aspect-ratio:4/5;background:linear-gradient(250deg,#0a0a0a,#141414);display:flex;align-items:center;justify-content:center;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(200,169,126,0.3)" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-author">@alex_j</div>
+          <div class="gallery-item-date">1 week ago</div>
+          <div class="gallery-item-actions">
+            <button class="like-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>19</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button class="page-num btn-ghost" style="width:auto;padding:0 12px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="page-num active">1</button>
+      <button class="page-num">2</button>
+      <button class="page-num">3</button>
+      <span style="color:var(--muted);padding:0 4px">···</span>
+      <button class="page-num">18</button>
+      <button class="page-num btn-ghost" style="width:auto;padding:0 12px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-logo">Cama<span>gru</span></div>
+    <div class="footer-copy">© 2025 Camagru. A 42 project.</div>
+  </footer>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PAGE: DETAIL
+════════════════════════════════════════ -->
+<div id="page-detail" class="page">
+  <nav>
+    <div class="nav-logo" onclick="switchPage('gallery')">Cama<span>gru</span></div>
+    <div class="nav-links">
+      <button class="nav-btn" onclick="switchPage('gallery')">← Gallery</button>
+      <button class="nav-btn" onclick="switchPage('editor')">Editor</button>
+      <button class="nav-btn ghost" onclick="switchPage('auth')">Sign In</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Left: image -->
+    <div class="detail-image-wrap">
+      <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#1a1a1a,#2a2020);display:flex;align-items:center;justify-content:center;">
+        <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="rgba(200,169,126,0.2)" stroke-width="0.75"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </div>
+      <div class="detail-author-badge">
+        <div class="author-avatar">M</div>
+        <span class="author-name">@marie_l</span>
+      </div>
+    </div>
+
+    <!-- Right: sidebar -->
+    <div class="detail-sidebar">
+      <!-- Stats -->
+      <div class="detail-stats">
+        <div class="stat">
+          <div class="stat-num">42</div>
+          <div class="stat-label">Likes</div>
+        </div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div class="stat">
+          <div class="stat-num">8</div>
+          <div class="stat-label">Comments</div>
+        </div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div class="stat">
+          <div class="stat-num">2h</div>
+          <div class="stat-label">Ago</div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-gold" style="flex:1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Like
+        </button>
+        <button class="btn btn-outline">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        </button>
+        <button class="btn btn-danger btn-sm" style="padding:10px 14px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+      </div>
+
+      <!-- Comments -->
+      <div class="comments-panel" style="flex:1;min-height:300px">
+        <div class="comments-header">Comments (8)</div>
+        <div class="comments-list">
+          <div class="comment">
+            <div class="author-avatar" style="flex-shrink:0;width:28px;height:28px;font-size:11px">T</div>
+            <div class="comment-body">
+              <div class="comment-meta"><strong>@thomas_k</strong>2h ago</div>
+              <div class="comment-text">This composition is incredible! How did you get the lighting so perfect?</div>
+            </div>
+          </div>
+          <div class="comment">
+            <div class="author-avatar" style="flex-shrink:0;width:28px;height:28px;font-size:11px">S</div>
+            <div class="comment-body">
+              <div class="comment-meta"><strong>@sofia_r</strong>1h ago</div>
+              <div class="comment-text">Love the overlay choice! The cat frame really works here 😄</div>
+            </div>
+          </div>
+          <div class="comment">
+            <div class="author-avatar" style="flex-shrink:0;width:28px;height:28px;font-size:11px">L</div>
+            <div class="comment-body">
+              <div class="comment-meta"><strong>@lucas_m</strong>45m ago</div>
+              <div class="comment-text">Honestly one of the best shots in the gallery this week.</div>
+            </div>
+          </div>
+        </div>
+        <div class="comment-form">
+          <input class="form-input" placeholder="Write a comment..." style="flex:1">
+          <button class="btn btn-gold btn-sm">Post</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-logo">Cama<span>gru</span></div>
+    <div class="footer-copy">© 2025 Camagru.</div>
+  </footer>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PAGE: EDITOR
+════════════════════════════════════════ -->
+<div id="page-editor" class="page">
+  <nav>
+    <div class="nav-logo" onclick="switchPage('gallery')">Cama<span>gru</span></div>
+    <div class="nav-links">
+      <button class="nav-btn" onclick="switchPage('gallery')">Gallery</button>
+      <button class="nav-btn" style="color:var(--gold)">Editor</button>
+      <button class="nav-btn" onclick="switchPage('settings')">Settings</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Left: Editor -->
+    <div class="editor-main">
+      <div>
+        <div class="badge" style="margin-bottom:12px">Studio</div>
+        <h1 class="editor-title">Create your<br><em>Capture</em></h1>
+      </div>
+
+      <!-- Webcam -->
+      <div class="webcam-area">
+        <div class="webcam-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+          </svg>
+          <p>Webcam preview will appear here</p>
+          <button class="btn btn-outline btn-sm" style="margin-top:4px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            Enable Camera
+          </button>
+        </div>
+      </div>
+
+      <!-- Overlay picker -->
+      <div class="overlay-picker">
+        <div class="overlay-picker-label">Choose an overlay</div>
+        <div class="overlay-list">
+          <div class="overlay-opt selected">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(200,169,126,0.6)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>
+          </div>
+          <div class="overlay-opt">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+          </div>
+          <div class="overlay-opt">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="overlay-opt">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div class="overlay-opt">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="overlay-opt">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="overlay-opt">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          </div>
+          <div class="overlay-opt">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="editor-controls">
+        <button class="btn btn-gold btn-lg" style="flex:1">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+          Capture Photo
+        </button>
+        <div style="color:var(--muted);font-size:13px;padding:0 8px">or</div>
+        <label class="btn btn-outline" style="cursor:pointer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Upload
+          <input type="file" style="display:none" accept="image/*">
+        </label>
+      </div>
+    </div>
+
+    <!-- Right: Thumbnails -->
+    <div class="editor-sidebar">
+      <div class="sidebar-label">Your captures (6)</div>
+      <div class="thumb-grid">
+        <div class="thumb">
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a,#252020)"></div>
+          <button class="thumb-delete">✕</button>
+        </div>
+        <div class="thumb">
+          <div style="width:100%;height:100%;background:linear-gradient(225deg,#1a201a,#101818)"></div>
+          <button class="thumb-delete">✕</button>
+        </div>
+        <div class="thumb">
+          <div style="width:100%;height:100%;background:linear-gradient(45deg,#201a20,#181020)"></div>
+          <button class="thumb-delete">✕</button>
+        </div>
+        <div class="thumb">
+          <div style="width:100%;height:100%;background:linear-gradient(160deg,#1a1510,#201a15)"></div>
+          <button class="thumb-delete">✕</button>
+        </div>
+        <div class="thumb">
+          <div style="width:100%;height:100%;background:linear-gradient(300deg,#141414,#1a1a1a)"></div>
+          <button class="thumb-delete">✕</button>
+        </div>
+        <div class="thumb">
+          <div style="width:100%;height:100%;background:linear-gradient(200deg,#0a101a,#101520)"></div>
+          <button class="thumb-delete">✕</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-logo">Cama<span>gru</span></div>
+    <div class="footer-copy">© 2025 Camagru.</div>
+  </footer>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PAGE: AUTH
+════════════════════════════════════════ -->
+<div id="page-auth" class="page" style="min-height:100vh;align-items:center;justify-content:center;padding:40px;">
+  <div style="position:absolute;top:20px;left:40px;">
+    <div class="nav-logo" onclick="switchPage('gallery')" style="cursor:pointer">Cama<span>gru</span></div>
+  </div>
+
+  <div class="auth-wrap">
+    <!-- Visual side -->
+    <div class="auth-visual">
+      <div class="auth-visual-bg"></div>
+      <div class="auth-visual-content">
+        <div class="badge" style="margin-bottom:20px">Welcome</div>
+        <h2>Your lens,<br><em>your story</em></h2>
+        <p style="margin-top:16px">Capture moments with your webcam, apply creative overlays, and share your vision with the world.</p>
+      </div>
+    </div>
+
+    <!-- Form side -->
+    <div class="auth-form-wrap">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="showTab('login')">Sign In</button>
+        <button class="auth-tab" id="tab-register" onclick="showTab('register')">Register</button>
+      </div>
+
+      <!-- Login form -->
+      <div id="form-login" class="auth-form">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input class="form-input" type="text" placeholder="your_username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" placeholder="••••••••">
+        </div>
+        <button class="btn btn-gold btn-lg" style="width:100%;margin-top:4px" onclick="switchPage('gallery')">
+          Sign In
+        </button>
+        <div class="auth-form-footer">
+          <a href="#">Forgot your password?</a>
+        </div>
+      </div>
+
+      <!-- Register form -->
+      <div id="form-register" class="auth-form" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input class="form-input" type="text" placeholder="choose_a_username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" placeholder="min. 8 characters">
+        </div>
+        <button class="btn btn-gold btn-lg" style="width:100%;margin-top:4px">
+          Create Account
+        </button>
+        <div class="auth-form-footer">
+          A verification email will be sent to confirm your account.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PAGE: SETTINGS
+════════════════════════════════════════ -->
+<div id="page-settings" class="page">
+  <nav>
+    <div class="nav-logo" onclick="switchPage('gallery')">Cama<span>gru</span></div>
+    <div class="nav-links">
+      <button class="nav-btn" onclick="switchPage('gallery')">Gallery</button>
+      <button class="nav-btn" onclick="switchPage('editor')">Editor</button>
+      <button class="nav-btn" style="color:var(--gold)">Settings</button>
+    </div>
+  </nav>
+
+  <main>
+    <div>
+      <div class="badge" style="margin-bottom:14px">Account</div>
+      <h1 class="settings-title">Your<br><em>Settings</em></h1>
+    </div>
+
+    <!-- Profile section -->
+    <div class="settings-section">
+      <div class="settings-section-header">
+        <div class="settings-section-title">Profile</div>
+        <button class="btn btn-ghost btn-sm">Save changes</button>
+      </div>
+      <div class="settings-section-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <input class="form-input" value="marie_l">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email address</label>
+            <input class="form-input" type="email" value="marie@example.com">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Password section -->
+    <div class="settings-section">
+      <div class="settings-section-header">
+        <div class="settings-section-title">Security</div>
+        <button class="btn btn-ghost btn-sm">Update password</button>
+      </div>
+      <div class="settings-section-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+          <div class="form-group">
+            <label class="form-label">Current password</label>
+            <input class="form-input" type="password" placeholder="••••••••">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New password</label>
+            <input class="form-input" type="password" placeholder="••••••••">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm new password</label>
+            <input class="form-input" type="password" placeholder="••••••••">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications section -->
+    <div class="settings-section">
+      <div class="settings-section-header">
+        <div class="settings-section-title">Notifications</div>
+      </div>
+      <div class="settings-section-body">
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Email on new comment</div>
+            <div class="settings-row-desc">Receive an email whenever someone comments on one of your photos.</div>
+          </div>
+          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="divider"></div>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Email on new like</div>
+            <div class="settings-row-desc">Get notified when someone likes your captures.</div>
+          </div>
+          <button class="toggle" onclick="this.classList.toggle('on')"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="settings-section" style="border-color:rgba(224,85,85,0.15)">
+      <div class="settings-section-header" style="border-color:rgba(224,85,85,0.15)">
+        <div class="settings-section-title" style="color:var(--danger)">Danger Zone</div>
+      </div>
+      <div class="settings-section-body">
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Delete account</div>
+            <div class="settings-row-desc">Permanently delete your account and all your photos. This cannot be undone.</div>
+          </div>
+          <button class="btn btn-danger btn-sm">Delete account</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-logo">Cama<span>gru</span></div>
+    <div class="footer-copy">© 2025 Camagru.</div>
+  </footer>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     DEMO NAVIGATION BAR
+════════════════════════════════════════ -->
+<div class="demo-bar">
+  <span>Pages</span>
+  <button class="demo-btn active" onclick="switchPage('gallery')">Gallery</button>
+  <button class="demo-btn" onclick="switchPage('detail')">Detail</button>
+  <button class="demo-btn" onclick="switchPage('editor')">Editor</button>
+  <button class="demo-btn" onclick="switchPage('auth')">Auth</button>
+  <button class="demo-btn" onclick="switchPage('settings')">Settings</button>
+</div>
+
+
+<script>
+  function switchPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+    const btns = document.querySelectorAll('.demo-btn');
+    const pages = ['gallery','detail','editor','auth','settings'];
+    const idx = pages.indexOf(name);
+    if (idx >= 0) btns[idx].classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  function showTab(tab) {
+    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+    document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+    document.getElementById('form-login').style.display = tab === 'login' ? 'flex' : 'none';
+    document.getElementById('form-register').style.display = tab === 'register' ? 'flex' : 'none';
+  }
+</script>
+</body>
+</html>
