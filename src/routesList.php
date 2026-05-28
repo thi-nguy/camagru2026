@@ -1,5 +1,6 @@
 <?php
 $router->addRoute('GET', '/gallery', $galleryController, 'showGallery');
+$router->addRoute('GET', '/editor', $editorController, 'showEditor');
 $router->addRoute('GET', '/register', $authController, 'showRegister', false);
 $router->addRoute('POST', '/register', $authController, 'register', false);
 $router->addRoute('GET', '/login', $authController, 'showLogin', false);

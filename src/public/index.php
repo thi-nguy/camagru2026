@@ -29,6 +29,8 @@ $authController = new AuthController($userModel);
 $photoModel     = new PhotoModel($db);
 $galleryController = new GalleryController($photoModel);
 
+$editorController = new EditorController($photoModel);
+
 $router = new Router();
 require_once __DIR__ . '/../routesList.php';
 $uriParts = parse_url($_SERVER['REQUEST_URI']);

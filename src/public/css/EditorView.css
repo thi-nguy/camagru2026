@@ -1,0 +1,85 @@
+/* ─── EDITOR LAYOUT ──────────────────────────── */
+.editor-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+.editor-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+.editor-main {
+  flex: 1;
+  min-width: 0;
+}
+.editor-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+}
+.editor-section {
+  margin-bottom: 24px;
+}
+.editor-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* ─── WEBCAM ─────────────────────────────────── */
+.webcam-container {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: #111;
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--border);
+}
+.webcam-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #666;
+}
+.webcam-placeholder svg {
+  opacity: 0.5;
+}
+.webcam-placeholder p {
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+.webcam-overlay-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.webcam-overlay-layer .overlay-img-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.7;
+  font-size: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#webcam {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
