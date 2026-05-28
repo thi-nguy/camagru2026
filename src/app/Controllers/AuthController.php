@@ -1,17 +1,20 @@
 <?php
 
-class AuthController {
+class AuthController
+{
     public function __construct(private UserModel $userModel) {}
 
-    public function showRegister() {
-        if (!isset($_SESSION['csrfToken'])) { 
+    public function showRegister()
+    {
+        if (!isset($_SESSION['csrfToken'])) {
             $csrfToken = bin2hex(random_bytes(32));
             $_SESSION['csrfToken'] = $csrfToken;
         }
         render("AuthView", ['activeTab' => 'register', 'csrfToken' => $_SESSION['csrfToken']]);
     }
 
-    public function register() {
+    public function register()
+    {
         init_flash();
         $flash = &$_SESSION['flash'];
         $errors = &$flash['errors'];
@@ -32,11 +35,11 @@ class AuthController {
             $errors['email'] = 'Email is required';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Email is invalid';
-        } elseif(strlen($email) > 255){
+        } elseif (strlen($email) > 255) {
             $errors['email'] = 'Email is too long';
         }
 
-        if (!$password ) {
+        if (!$password) {
             $errors['password'] = 'Password is required';
         } elseif (strlen($password) < 8) {
             $errors['password'] = 'Password must be at least 8 characters';
@@ -59,7 +62,6 @@ class AuthController {
             }
             $flash['old'] = [];
             redirect('/register');
-
         } catch (DuplicateEmailException $e) {
             error_log("DB Error: " . $e->getMessage());
             $flash['warning'] = 'Email already used';
@@ -78,7 +80,8 @@ class AuthController {
         }
     }
 
-    public function confirmEmail() {
+    public function confirmEmail()
+    {
         init_flash();
         $flash = &$_SESSION['flash'];
 
@@ -118,11 +121,13 @@ class AuthController {
         }
     }
 
-    public function showExpiredToken() {
+    public function showExpiredToken()
+    {
         render("expiredTokenView");
     }
 
-    public function resendToken() { // ! Todo: flash message (bug when new token created and come back to the same page -> still got flash message from before?!)
+    public function resendToken()
+    { // ! Todo: flash message (bug when new token created and come back to the same page -> still got flash message from before?!)
         init_flash();
         $flash = &$_SESSION['flash'];
         $errors = &$flash['errors'];
@@ -133,7 +138,7 @@ class AuthController {
             $errors['email'] = 'Email is required';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Email is invalid';
-        } elseif(strlen($email) > 255){
+        } elseif (strlen($email) > 255) {
             $errors['email'] = 'Email is too long';
         }
 
@@ -167,7 +172,8 @@ class AuthController {
         }
     }
 
-    public function showLogin() {
+    public function showLogin()
+    {
         if (!isset($_SESSION['csrfToken'])) { //isset: handle null case or key non exist
             $csrfToken = bin2hex(random_bytes(32));
             $_SESSION['csrfToken'] = $csrfToken;
@@ -177,7 +183,8 @@ class AuthController {
 
     // Todo - Nice to have in handleLogin(): 1) Rate limiting / lockout after N fail password tries. 2) Log failed login attempts to detect brute force.
 
-    public function handleLogin() {
+    public function handleLogin()
+    {
         init_flash();
         $flash = &$_SESSION['flash'];
         $errors = &$flash['errors'];
@@ -189,7 +196,7 @@ class AuthController {
         if (!hash_equals($_SESSION['csrfToken'], $_POST['csrfToken'] ?? '')) {
             http_response_code(403);
             exit();
-        } 
+        }
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
 
@@ -203,7 +210,7 @@ class AuthController {
         if (!$existUser || !$passwordOk || $existUser['is_confirmed'] != 1) {
             $errors['login'] = "Invalid username or password.";
             redirect('/login');
-        } 
+        }
         session_regenerate_id(true);
         $_SESSION['id'] = $existUser['id'];
         unset($_SESSION['csrfToken']);
@@ -212,14 +219,15 @@ class AuthController {
         if (isset($_SESSION['requestUri'])) {
             $requestUri = $_SESSION['requestUri'];
             unset($_SESSION['requestUri']);
-            session_write_close(); 
+            session_write_close();
             redirect($requestUri);
         }
-        session_write_close(); 
+        session_write_close();
         redirect('/gallery');
     }
 
-    public function handleLogout() {
+    public function handleLogout()
+    {
         if (!isset($_SESSION['csrfToken'])) {
             http_response_code(403);
             exit();
@@ -227,16 +235,17 @@ class AuthController {
         if (!hash_equals($_SESSION['csrfToken'], $_POST['csrfToken'] ?? '')) {
             http_response_code(403);
             exit();
-        } 
+        }
         $_SESSION = [];
         session_destroy();
-        if(isset($_COOKIE[session_name()])) {
+        if (isset($_COOKIE[session_name()])) {
             setcookie(session_name(), '', time() - 3600, '/');
         }
         redirect('/login');
     }
 
-    public function showResetPassword() {
+    public function showResetPassword()
+    {
         render("ResetPassView");
     }
 }

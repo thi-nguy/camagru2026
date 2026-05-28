@@ -36,4 +36,3 @@ class Router
         require __DIR__ . '/../Views/404.php';
     }
 }
-

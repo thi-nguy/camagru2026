@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camagru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET ──────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── CSS VARIABLES ──────────────────────────── */
+:root {
+  --bg: #ffffff;
+  --surface: #fafafa;
+  --border: #dbdbdb;
+  --border-light: #efefef;
+  --text: #262626;
+  --text-muted: #737373;
+  --text-light: #a8a8a8;
+  --accent: #0095F6;
+  --accent-hover: #1877f2;
+  --accent-light: #e8f4fe;
+  --danger: #ed4956;
+  --success: #2ecc71;
+  --warning: #f39c12;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.12);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,.18);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --header-h: 60px;
+}
+
+/* ─── BASE ───────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── VIEWS ──────────────────────────────────── */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ─── UTILITIES ──────────────────────────────── */
+.sr-only { position: absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.gap-8 { gap: 8px; }
+.section-heading { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.section-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+
+.badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent-light); color: var(--accent);
+  font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px;
+  letter-spacing: .04em; text-transform: uppercase;
+}
+
+.avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 760px) {
+  .header-nav .btn:not(.hamburger) { display: none; }
+  .hamburger { display: flex; }
+  .auth-card { padding: 28px 22px; }
+}
+
+/* ─── HEADER ─────────────────────────────────── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--header-h);
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+}
+
+.header-logo {
+  font-size: 22px; font-weight: 800; letter-spacing: -1px;
+  color: var(--text); cursor: pointer; flex: 1;
+  background: linear-gradient(135deg, #262626 0%, #0095F6 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  user-select: none;
+}
+.header-logo span { font-weight: 300; }
+
+.header-nav { display: flex; gap: 8px; align-items: center; }
+
+/* ─── BUTTONS ────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 8px; font-size: 13px;
+  font-weight: 600; font-family: 'Inter', sans-serif;
+  cursor: pointer; border: none; transition: all .15s ease;
+  white-space: nowrap; text-decoration: none;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,149,246,.35); }
+.btn-primary:disabled { background: #b2dffc; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-ghost { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+.btn-ghost:hover { background: var(--surface); border-color: #aaa; }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { background: #c0392b; }
+.btn-sm { padding: 5px 11px; font-size: 12px; border-radius: 6px; }
+
+/* ─── HAMBURGER ──────────────────────────────── */
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; padding: 4px; border: none; background: none;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text); border-radius: 2px; transition: all .25s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ─── MOBILE MENU ────────────────────────────── */
+.mobile-menu {
+  display: none; position: fixed; top: var(--header-h); left: 0; right: 0;
+  background: #fff; border-bottom: 1px solid var(--border);
+  padding: 16px 20px; z-index: 99; flex-direction: column; gap: 10px;
+  box-shadow: var(--shadow-md);
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu .btn { width: 100%; justify-content: center; }
+
+/* ─── GALLERY LAYOUT ─────────────────────────── */
+.gallery-wrap { max-width: 960px; margin: 0 auto; padding: 32px 20px 80px; }
+.gallery-header { margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
+.gallery-title { font-size: 15px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* ─── CARD ───────────────────────────────────── */
+.card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform .2s ease, box-shadow .2s ease;
+  cursor: pointer;
+}
+.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+.card-img {
+  width: 100%; aspect-ratio: 1/1; overflow: hidden; position: relative;
+}
+.card-img-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px; position: relative;
+}
+.card-img-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0); transition: background .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.card:hover .card-img-overlay { background: rgba(0,0,0,.12); }
+
+.card-body { padding: 12px 14px; }
+.card-user { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.card-username { font-size: 13px; font-weight: 600; }
+.card-actions { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+
+/* ─── HEART BUTTON ───────────────────────────── */
+.heart-btn {
+  background: none; border: none; cursor: pointer; padding: 2px;
+  display: flex; align-items: center; gap: 5px;
+  font-size: 13px; font-weight: 600; color: var(--text);
+  transition: transform .15s;
+}
+.heart-btn:hover { transform: scale(1.15); }
+.heart-btn svg { transition: all .15s; }
+.heart-btn.liked svg { fill: var(--danger); stroke: var(--danger); }
+.heart-btn.liked { color: var(--danger); }
+
+.card-comment-preview { font-size: 12.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-comment-preview strong { color: var(--text); }
+
+/* ─── PAGINATION ─────────────────────────────── */
+.pagination {
+  display: flex; justify-content: center; align-items: center;
+  gap: 6px; margin-top: 40px;
+}
+.page-btn {
+  width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: none; cursor: pointer; font-size: 13px; font-weight: 600;
+  font-family: 'Inter', sans-serif; color: var(--text);
+  transition: all .15s; display: flex; align-items: center; justify-content: center;
+}
+.page-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.page-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 760px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+}
+@media (max-width: 480px) {
+  .gallery-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+}
+
+/* ─── MODAL BACKDROP ─────────────────────────── */
+.modal-backdrop {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.65); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-backdrop.open { display: flex; }
+
+/* ─── MODAL ──────────────────────────────────── */
+.modal {
+  background: #fff; border-radius: var(--radius);
+  width: 100%; max-width: 860px; max-height: 90vh;
+  display: flex; overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  animation: modalIn .2s ease;
+}
+@keyframes modalIn {
+  from { opacity:0; transform:scale(.95); }
+  to   { opacity:1; transform:scale(1); }
+}
+
+.modal-img {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 80px; background: #111;
+}
+
+/* ─── MODAL SIDEBAR ──────────────────────────── */
+.modal-sidebar {
+  width: 320px; flex-shrink: 0; display: flex; flex-direction: column;
+  border-left: 1px solid var(--border);
+}
+.modal-user { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.modal-user .username { font-weight: 700; font-size: 14px; }
+
+/* ─── COMMENTS ───────────────────────────────── */
+.modal-comments {
+  flex: 1; overflow-y: auto; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.modal-comments::-webkit-scrollbar { width: 4px; }
+.modal-comments::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.comment { display: flex; gap: 10px; }
+.comment .avatar { width: 32px; height: 32px; font-size: 12px; flex-shrink: 0; }
+.comment-body { flex: 1; }
+.comment-body strong { font-size: 13px; font-weight: 600; margin-right: 4px; }
+.comment-body p { font-size: 13px; display: inline; color: var(--text); }
+.comment-time { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+/* ─── MODAL FOOTER ───────────────────────────── */
+.modal-footer { border-top: 1px solid var(--border); padding: 12px 16px; }
+.modal-likes { font-size: 13px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.comment-input-row { display: flex; gap: 8px; }
+.comment-input {
+  flex: 1; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 8px 12px; font-size: 13px; font-family: 'Inter', sans-serif;
+  outline: none; transition: border-color .15s;
+  resize: none; height: 38px;
+}
+.comment-input:focus { border-color: var(--accent); }
+
+/* ─── MODAL CLOSE ────────────────────────────── */
+.modal-close {
+  position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,.9);
+  border: none; border-radius: 50%; width: 36px; height: 36px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 18px; box-shadow: var(--shadow-sm); z-index: 10;
+  transition: background .15s;
+}
+.modal-close:hover { background: #fff; }
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 760px) {
+  .modal { flex-direction: column; max-height: 95vh; }
+  .modal-img { aspect-ratio: 1/1; font-size: 60px; }
+  .modal-sidebar { width: 100%; border-left: none; border-top: 1px solid var(--border); }
+}
+
+/* ─── EDITOR LAYOUT ──────────────────────────── */
+.editor-wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 60px; }
+.editor-layout { display: flex; gap: 24px; align-items: flex-start; }
+.editor-main { flex: 1; min-width: 0; }
+.editor-sidebar { width: 220px; flex-shrink: 0; }
+.editor-section { margin-bottom: 24px; }
+.editor-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--text-muted); margin-bottom: 10px;
+}
+
+/* ─── WEBCAM ─────────────────────────────────── */
+.webcam-container {
+  width: 100%; aspect-ratio: 4/3; background: #111;
+  border-radius: var(--radius); overflow: hidden; position: relative;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid var(--border);
+}
+.webcam-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  color: #666;
+}
+.webcam-placeholder svg { opacity: .5; }
+.webcam-placeholder p { font-size: 13px; opacity: .6; }
+
+.webcam-overlay-layer {
+  position: absolute; inset: 0; pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.webcam-overlay-layer .overlay-img-preview {
+  width: 100%; height: 100%; object-fit: contain; opacity: .7;
+  font-size: 64px; display: flex; align-items: center; justify-content: center;
+}
+
+#webcam { display: none; width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius); }
+#webcam.active { display: block; }
+
+/* ─── OVERLAY STRIP ──────────────────────────── */
+.overlay-strip {
+  display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.overlay-strip::-webkit-scrollbar { height: 4px; }
+.overlay-strip::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.overlay-thumb {
+  flex-shrink: 0; width: 80px; height: 80px; border-radius: var(--radius-sm);
+  border: 2.5px solid var(--border); overflow: hidden; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; background: var(--surface);
+  transition: border-color .15s, transform .15s;
+  user-select: none;
+}
+.overlay-thumb:hover { border-color: #aaa; transform: scale(1.03); }
+.overlay-thumb.selected { border-color: var(--accent); outline: 2px solid var(--accent-light); }
+
+/* ─── CAPTURE / UPLOAD ROW ───────────────────── */
+.capture-row { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+.upload-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 8px; border: 1.5px dashed var(--border);
+  font-size: 13px; font-weight: 500; color: var(--text-muted);
+  cursor: pointer; transition: all .15s;
+}
+.upload-label:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+input[type=file] { display: none; }
+
+/* ─── THUMBNAIL SIDEBAR ──────────────────────── */
+.sidebar-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+.thumb-strip { display: flex; flex-direction: column; gap: 10px; }
+.thumb-item {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 8px; overflow: hidden;
+}
+.thumb-item-img {
+  width: 52px; height: 52px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; background: var(--border-light);
+}
+.thumb-item-info { flex: 1; min-width: 0; }
+.thumb-item-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.thumb-item-size { font-size: 11px; color: var(--text-muted); }
+.thumb-delete {
+  background: none; border: none; cursor: pointer; color: var(--text-muted);
+  padding: 4px; border-radius: 4px; transition: color .15s, background .15s;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.thumb-delete:hover { color: var(--danger); background: #fef0f1; }
+.thumb-empty { color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px 0; }
+
+/* ─── AUTH GATE NOTICE ───────────────────────── */
+.auth-gate-notice {
+  text-align: center; padding: 60px 20px;
+  max-width: 400px; margin: 0 auto;
+}
+.auth-gate-notice .icon { font-size: 52px; margin-bottom: 16px; }
+.auth-gate-notice h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.auth-gate-notice p { color: var(--text-muted); margin-bottom: 20px; font-size: 14px; }
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 760px) {
+  .editor-layout { flex-direction: column; }
+  .editor-sidebar { width: 100%; }
+}
+
+/* ─── AUTH WRAP ──────────────────────────────── */
+.auth-wrap {
+  min-height: calc(100vh - var(--header-h));
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 20px;
+  background: linear-gradient(160deg, #f8fbff 0%, #fff 60%);
+}
+
+/* ─── AUTH CARD ──────────────────────────────── */
+.auth-card {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 16px; padding: 36px 40px; width: 100%; max-width: 420px;
+  box-shadow: var(--shadow-md);
+  animation: fadeUp .3s ease;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.auth-logo {
+  text-align: center; font-size: 28px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 24px;
+  background: linear-gradient(135deg, #262626, #0095F6);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* ─── TABS ───────────────────────────────────── */
+.tab-row {
+  display: flex; background: var(--surface); border-radius: 10px;
+  padding: 3px; margin-bottom: 28px; border: 1px solid var(--border);
+}
+.tab-btn {
+  flex: 1; padding: 9px; border-radius: 8px; border: none;
+  background: none; font-size: 13px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer; color: var(--text-muted);
+  transition: all .2s;
+}
+.tab-btn.active { background: #fff; color: var(--text); box-shadow: var(--shadow-sm); }
+
+/* ─── FORMS ──────────────────────────────────── */
+.auth-form { display: none; flex-direction: column; gap: 14px; }
+.auth-form.active { display: flex; }
+
+.input-group { display: flex; flex-direction: column; gap: 5px; }
+.input-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
+.input-field {
+  border: 1.5px solid var(--border); border-radius: 9px;
+  padding: 10px 14px; font-size: 14px; font-family: 'Inter', sans-serif;
+  outline: none; transition: border-color .15s, box-shadow .15s; width: 100%;
+  background: var(--surface); color: var(--text);
+}
+.input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,149,246,.12); background: #fff; }
+
+/* ─── PASSWORD STRENGTH ──────────────────────── */
+.strength-bar-wrap { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 4px; }
+.strength-bar { height: 100%; width: 0%; border-radius: 4px; transition: width .3s, background .3s; }
+.strength-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+/* ─── MISC ───────────────────────────────────── */
+.forgot-link { font-size: 12.5px; color: var(--accent); text-decoration: none; align-self: flex-end; font-weight: 500; }
+.forgot-link:hover { text-decoration: underline; }
+
+.auth-divider { text-align: center; position: relative; margin: 4px 0; }
+.auth-divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border); }
+.auth-divider span { background: #fff; padding: 0 10px; position: relative; font-size: 12px; color: var(--text-muted); }
+
+.success-msg {
+  background: #f0fff4; border: 1.5px solid #bbf7d0; border-radius: 10px;
+  padding: 14px 16px; text-align: center; color: #166534;
+  font-size: 13px; font-weight: 500; display: none; gap: 8px; align-items: center; justify-content: center;
+}
+.success-msg.show { display: flex; }
+
+/* ─── TOAST CONTAINER ────────────────────────── */
+.toast-container {
+  position: fixed; bottom: 24px; right: 24px; z-index: 500;
+  display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+}
+
+/* ─── TOAST ──────────────────────────────────── */
+.toast {
+  background: var(--text); color: #fff; padding: 12px 18px;
+  border-radius: 10px; font-size: 13px; font-weight: 500;
+  box-shadow: var(--shadow-md); pointer-events: all;
+  animation: toastIn .25s ease; min-width: 200px; max-width: 320px;
+  display: flex; align-items: center; gap: 10px;
+}
+.toast.success { background: #1a7f48; }
+.toast.error   { background: var(--danger); }
+.toast.info    { background: var(--accent); }
+
+.toast-icon { font-size: 15px; }
+
+/* ─── ANIMATIONS ─────────────────────────────── */
+@keyframes toastIn {
+  from { opacity:0; transform:translateY(12px) scale(.95); }
+  to   { opacity:1; transform:translateY(0)    scale(1);   }
+}
+@keyframes toastOut {
+  from { opacity:1; transform:scale(1);  }
+  to   { opacity:0; transform:scale(.9); }
+}
+.toast.removing { animation: toastOut .2s ease forwards; }
+
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ──────────────────────────────────────── -->
+<header class="header" id="header">
+  <div class="header-logo" onclick="navTo('gallery')">Cam<span>agru</span></div>
+  <nav class="header-nav" id="desktopNav">
+    <button class="btn btn-ghost btn-sm" onclick="navTo('gallery')" id="navGallery">Gallery</button>
+    <button class="btn btn-primary btn-sm" onclick="navTo('editor')" id="navEditor" style="display:none">Editor</button>
+    <button class="btn btn-ghost btn-sm" onclick="navTo('auth')" id="navAuth">Sign In</button>
+    <button class="btn btn-danger btn-sm" onclick="logout()" id="navLogout" style="display:none">Log Out</button>
+  </nav>
+  <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="btn btn-ghost" onclick="navTo('gallery');toggleMobileMenu()">Gallery</button>
+  <button class="btn btn-primary" onclick="navTo('editor');toggleMobileMenu()" id="mNavEditor" style="display:none">Editor</button>
+  <button class="btn btn-ghost" onclick="navTo('auth');toggleMobileMenu()" id="mNavAuth">Sign In</button>
+  <button class="btn btn-danger" onclick="logout();toggleMobileMenu()" id="mNavLogout" style="display:none">Log Out</button>
+</div>
+
+<!-- ─── GALLERY VIEW ─────────────────────────────────── -->
+<section class="view active" id="viewGallery">
+  <div class="gallery-wrap">
+    <div class="gallery-header">
+      <span class="gallery-title">Recent photos</span>
+      <span class="badge">5 posts</span>
+    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</section>
+
+<!-- ─── EDITOR VIEW ──────────────────────────────────── -->
+<section class="view" id="viewEditor">
+  <div class="editor-wrap">
+    <h2 class="section-heading">Photo Editor</h2>
+    <p class="section-sub">Capture a photo or upload one, then apply a fun overlay.</p>
+
+    <!-- Auth gate -->
+    <div id="editorAuthGate" class="auth-gate-notice" style="display:none">
+      <div class="icon">🔒</div>
+      <h2>Sign in required</h2>
+      <p>You need to be logged in to use the editor.</p>
+      <button class="btn btn-primary" onclick="navTo('auth')">Sign In / Register</button>
+    </div>
+
+    <!-- Editor content -->
+    <div class="editor-layout" id="editorContent">
+      <div class="editor-main">
+
+        <!-- Webcam preview -->
+        <div class="editor-section">
+          <div class="editor-label">Camera preview</div>
+          <div class="webcam-container" id="webcamContainer">
+            <div class="webcam-placeholder" id="webcamPlaceholder">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              <p>Camera not active</p>
+              <button class="btn btn-ghost btn-sm" onclick="startWebcam()" style="margin-top:4px">Enable Camera</button>
+            </div>
+            <video id="webcam" autoplay muted playsinline></video>
+            <div class="webcam-overlay-layer" id="overlayLayer" style="display:none">
+              <div style="font-size:80px;opacity:.75" id="overlayPreview"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlay selector -->
+        <div class="editor-section">
+          <div class="editor-label">Choose overlay</div>
+          <div class="overlay-strip" id="overlayStrip"></div>
+        </div>
+
+        <!-- Capture / upload -->
+        <div class="capture-row">
+          <button class="btn btn-primary" id="captureBtn" onclick="capturePhoto()" disabled>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-7-4H9l-2 4h10l-2-4z"/></svg>
+            Capture
+          </button>
+          <label class="upload-label" for="fileUpload">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload image
+          </label>
+          <input type="file" id="fileUpload" accept="image/*" onchange="handleUpload(event)">
+        </div>
+      </div>
+
+      <!-- Sidebar: captured thumbnails -->
+      <div class="editor-sidebar">
+        <div class="sidebar-title">Captured photos</div>
+        <div class="thumb-strip" id="thumbStrip">
+          <div class="thumb-empty" id="thumbEmpty">No photos yet.<br>Capture or upload to start.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── AUTH VIEW ────────────────────────────────────── -->
+<section class="view" id="viewAuth">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">Camagru</div>
+
+      <div class="tab-row">
+        <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+        <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form class="auth-form active" id="formLogin" onsubmit="return submitLogin(event)">
+        <div class="input-group">
+          <label class="input-label" for="loginUser">Username</label>
+          <input class="input-field" id="loginUser" type="text" placeholder="your_username" autocomplete="username">
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="loginPass">Password</label>
+          <input class="input-field" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <a class="forgot-link" href="#">Forgot password?</a>
+        <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center;padding:11px">Sign In</button>
+        <div class="success-msg" id="loginSuccess">
+          <span>✓</span> Logged in successfully!
+        </div>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form class="auth-form" id="formRegister" onsubmit="return submitRegister(event)">
+        <div class="input-group">
+          <label class="input-label" for="regUser">Username</label>
+          <input class="input-field" id="regUser" type="text" placeholder="choose_a_username" autocomplete="username">
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="regEmail">Email</label>
+          <input class="input-field" id="regEmail" type="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="regPass">Password</label>
+          <input class="input-field" id="regPass" type="password" placeholder="create a strong password" autocomplete="new-password" oninput="updateStrength(this.value)">
+          <div class="strength-bar-wrap"><div class="strength-bar" id="strengthBar"></div></div>
+          <div class="strength-label" id="strengthLabel">Enter a password</div>
+        </div>
+        <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center;padding:11px">Create Account</button>
+        <div class="success-msg" id="registerSuccess">
+          <span>✓</span> Account created! Check your email to confirm.
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MODAL ────────────────────────────────────────── -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <div class="modal-img" id="modalImg"></div>
+    <div class="modal-sidebar">
+      <div class="modal-user">
+        <div class="avatar" id="modalAvatar"></div>
+        <div>
+          <div class="username" id="modalUsername"></div>
+          <div style="font-size:12px;color:var(--text-muted)" id="modalTime"></div>
+        </div>
+        <button class="modal-close" onclick="closeModal()" style="position:relative;top:auto;right:auto;margin-left:auto" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-comments" id="modalComments"></div>
+      <div class="modal-footer">
+        <div class="modal-likes" id="modalLikes"></div>
+        <div class="comment-input-row">
+          <textarea class="comment-input" id="commentInput" placeholder="Add a comment…" rows="1"
+            onkeydown="commentKeydown(event)"></textarea>
+          <button class="btn btn-primary btn-sm" onclick="postComment()">Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOAST CONTAINER ──────────────────────────────── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ─── JAVASCRIPT ───────────────────────────────────── -->
+<script>
+/* ══════════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════════ */
+let isLoggedIn = true;
+let currentUser = 'guest';
+let currentPage = 1;
+const CARDS_PER_PAGE = 5;
+let capturedPhotos = [];
+let selectedOverlay = null;
+let activeModalCard = null;
+let webcamStream = null;
+
+/* ══════════════════════════════════════════════════════
+   MOCK DATA
+══════════════════════════════════════════════════════ */
+const AVATARS = ['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6'];
+const OVERLAYS = [
+  { id: 1, emoji: '🌟', label: 'Stars' },
+  { id: 2, emoji: '🎭', label: 'Theater' },
+  { id: 3, emoji: '🌈', label: 'Rainbow' },
+];
+const GALLERY_DATA = [
+  {
+    id: 1, emoji: '🌅', bg: '#1a1a2e', username: 'alex_photo', avatarColor: '#e74c3c',
+    likes: 142, liked: false,
+    comments: [
+      { user: 'sara_k', text: 'Absolutely stunning shot!', time: '2h', color: '#3498db' },
+      { user: 'mike_lens', text: 'Love the golden hour vibes 🔥', time: '1h', color: '#2ecc71' },
+      { user: 'jenny_art', text: 'What camera did you use?', time: '30m', color: '#f39c12' },
+    ],
+    time: '3 hours ago'
+  },
+  {
+    id: 2, emoji: '🏙️', bg: '#0d0d0d', username: 'urban_snaps', avatarColor: '#3498db',
+    likes: 89, liked: false,
+    comments: [
+      { user: 'city_walker', text: 'NYC never sleeps!', time: '5h', color: '#9b59b6' },
+      { user: 'neon_night', text: 'Perfect timing on this one ✨', time: '4h', color: '#e74c3c' },
+    ],
+    time: '6 hours ago'
+  },
+  {
+    id: 3, emoji: '🌿', bg: '#0d1f0d', username: 'nature.eye', avatarColor: '#2ecc71',
+    likes: 203, liked: true,
+    comments: [
+      { user: 'forest_fan', text: 'So serene and beautiful 🌿', time: '1d', color: '#e74c3c' },
+      { user: 'green_earth', text: 'Makes me want to go hiking!', time: '23h', color: '#3498db' },
+      { user: 'bio_shots', text: 'What lens is this?', time: '20h', color: '#f39c12' },
+      { user: 'wild_pixels', text: 'Nature photography at its finest', time: '15h', color: '#9b59b6' },
+    ],
+    time: '1 day ago'
+  },
+  {
+    id: 4, emoji: '🎨', bg: '#1a0d2e', username: 'colorist_99', avatarColor: '#f39c12',
+    likes: 56, liked: false,
+    comments: [
+      { user: 'art_lover', text: 'The colors are incredible!', time: '2d', color: '#2ecc71' },
+    ],
+    time: '2 days ago'
+  },
+  {
+    id: 5, emoji: '🌊', bg: '#0d1a2e', username: 'wave_rider', avatarColor: '#9b59b6',
+    likes: 317, liked: false,
+    comments: [
+      { user: 'surf_shots', text: 'Epic wave catch!!! 🏄', time: '3d', color: '#3498db' },
+      { user: 'ocean_lens', text: 'What timing. Incredible.', time: '3d', color: '#e74c3c' },
+      { user: 'beach_life', text: 'I can almost hear the waves', time: '2d', color: '#2ecc71' },
+    ],
+    time: '3 days ago'
+  }
+];
+
+/* ══════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════ */
+function navTo(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  if (view === 'editor' && !isLoggedIn) {
+    document.getElementById('viewEditor').classList.add('active');
+    document.getElementById('editorAuthGate').style.display = 'block';
+    document.getElementById('editorContent').style.display = 'none';
+  } else {
+    document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1)).classList.add('active');
+    if (view === 'editor') {
+      document.getElementById('editorAuthGate').style.display = 'none';
+      document.getElementById('editorContent').style.display = 'flex';
+    }
+  }
+}
+
+function updateHeader() {
+  const show = isLoggedIn;
+  document.getElementById('navEditor').style.display = show ? '' : 'none';
+  document.getElementById('navAuth').style.display = show ? 'none' : '';
+  document.getElementById('navLogout').style.display = show ? '' : 'none';
+  document.getElementById('mNavEditor').style.display = show ? '' : 'none';
+  document.getElementById('mNavAuth').style.display = show ? 'none' : '';
+  document.getElementById('mNavLogout').style.display = show ? '' : 'none';
+}
+
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const ham = document.getElementById('hamburger');
+  menu.classList.toggle('open');
+  ham.classList.toggle('open');
+}
+
+/* ══════════════════════════════════════════════════════
+   GALLERY
+══════════════════════════════════════════════════════ */
+function renderGallery() {
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = '';
+  GALLERY_DATA.forEach(card => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div class="card-img" onclick="openModal(${card.id})">
+        <div class="card-img-placeholder" style="background:${card.bg}">
+          <span style="font-size:56px">${card.emoji}</span>
+        </div>
+        <div class="card-img-overlay"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-user">
+          <div class="avatar" style="background:${card.avatarColor}">${card.username.charAt(0).toUpperCase()}</div>
+          <span class="card-username">${card.username}</span>
+        </div>
+        <div class="card-actions">
+          <button class="heart-btn ${card.liked ? 'liked' : ''}" id="heart-${card.id}" onclick="toggleLike(event,${card.id})">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="${card.liked?'#ed4956':'none'}" stroke="${card.liked?'#ed4956':'currentColor'}" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <span id="likeCount-${card.id}">${card.likes}</span>
+          </button>
+        </div>
+        <div class="card-comment-preview">
+          ${card.comments.length > 0
+            ? `<strong>${card.comments[0].user}</strong> ${card.comments[0].text}`
+            : '<span style="color:var(--text-light)">No comments yet</span>'}
+        </div>
+      </div>`;
+    grid.appendChild(div);
+  });
+  renderPagination();
+}
+
+function renderPagination() {
+  const total = 3; // mock pages
+  const pg = document.getElementById('pagination');
+  pg.innerHTML = '';
+  const prev = document.createElement('button');
+  prev.className = 'page-btn'; prev.textContent = '←'; prev.disabled = currentPage === 1;
+  prev.onclick = () => { if(currentPage > 1){currentPage--;renderPagination();} };
+  pg.appendChild(prev);
+  for (let i = 1; i <= total; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+    btn.textContent = i;
+    btn.onclick = () => { currentPage = i; renderPagination(); showToast('Loaded page ' + i, 'info'); };
+    pg.appendChild(btn);
+  }
+  const next = document.createElement('button');
+  next.className = 'page-btn'; next.textContent = '→'; next.disabled = currentPage === total;
+  next.onclick = () => { if(currentPage < total){currentPage++;renderPagination();} };
+  pg.appendChild(next);
+}
+
+/* ══════════════════════════════════════════════════════
+   LIKES
+══════════════════════════════════════════════════════ */
+function toggleLike(e, id) {
+  e.stopPropagation();
+  const card = GALLERY_DATA.find(c => c.id === id);
+  card.liked = !card.liked;
+  card.likes += card.liked ? 1 : -1;
+  const btn = document.getElementById('heart-' + id);
+  const countEl = document.getElementById('likeCount-' + id);
+  countEl.textContent = card.likes;
+  btn.classList.toggle('liked', card.liked);
+  const svg = btn.querySelector('svg');
+  svg.setAttribute('fill', card.liked ? '#ed4956' : 'none');
+  svg.setAttribute('stroke', card.liked ? '#ed4956' : 'currentColor');
+  if (card.liked) showToast('Added to your likes ❤️', 'success');
+}
+
+/* ══════════════════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════════════════ */
+function openModal(id) {
+  const card = GALLERY_DATA.find(c => c.id === id);
+  activeModalCard = card;
+  document.getElementById('modalImg').style.background = card.bg;
+  document.getElementById('modalImg').innerHTML = `<span style="font-size:90px">${card.emoji}</span>`;
+  document.getElementById('modalAvatar').style.background = card.avatarColor;
+  document.getElementById('modalAvatar').textContent = card.username.charAt(0).toUpperCase();
+  document.getElementById('modalUsername').textContent = card.username;
+  document.getElementById('modalTime').textContent = card.time;
+  renderModalComments(card);
+  document.getElementById('modalLikes').innerHTML = `
+    <button class="heart-btn ${card.liked?'liked':''}" onclick="toggleLikeModal(${card.id})" id="modalHeart">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="${card.liked?'#ed4956':'none'}" stroke="${card.liked?'#ed4956':'currentColor'}" stroke-width="2">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+    </button>
+    <span id="modalLikeCount">${card.likes} likes</span>`;
+  document.getElementById('modalBackdrop').classList.add('open');
+  document.getElementById('commentInput').value = '';
+}
+
+function renderModalComments(card) {
+  const wrap = document.getElementById('modalComments');
+  if (card.comments.length === 0) {
+    wrap.innerHTML = '<div style="color:var(--text-light);font-size:13px;text-align:center;padding:20px 0">No comments yet. Be first!</div>';
+    return;
+  }
+  wrap.innerHTML = card.comments.map(c => `
+    <div class="comment">
+      <div class="avatar" style="background:${c.color}">${c.user.charAt(0).toUpperCase()}</div>
+      <div class="comment-body">
+        <strong>${c.user}</strong><p>${c.text}</p>
+        <div class="comment-time">${c.time} ago</div>
+      </div>
+    </div>`).join('');
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function toggleLikeModal(id) {
+  toggleLike({ stopPropagation: ()=>{} }, id);
+  const card = GALLERY_DATA.find(c => c.id === id);
+  const btn = document.getElementById('modalHeart');
+  btn.classList.toggle('liked', card.liked);
+  const svg = btn.querySelector('svg');
+  svg.setAttribute('fill', card.liked ? '#ed4956' : 'none');
+  svg.setAttribute('stroke', card.liked ? '#ed4956' : 'currentColor');
+  document.getElementById('modalLikeCount').textContent = card.likes + ' likes';
+  // sync card
+  const cardHeart = document.getElementById('heart-' + id);
+  if (cardHeart) {
+    cardHeart.classList.toggle('liked', card.liked);
+    const cSvg = cardHeart.querySelector('svg');
+    cSvg.setAttribute('fill', card.liked ? '#ed4956' : 'none');
+    cSvg.setAttribute('stroke', card.liked ? '#ed4956' : 'currentColor');
+    document.getElementById('likeCount-' + id).textContent = card.likes;
+  }
+}
+
+function closeModal() {
+  document.getElementById('modalBackdrop').classList.remove('open');
+  activeModalCard = null;
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalBackdrop')) closeModal();
+}
+
+function postComment() {
+  if (!isLoggedIn) { showToast('Sign in to comment', 'error'); return; }
+  const input = document.getElementById('commentInput');
+  const text = input.value.trim();
+  if (!text) return;
+  activeModalCard.comments.push({ user: currentUser, text, time: 'just now', color: '#0095F6' });
+  renderModalComments(activeModalCard);
+  renderGallery();
+  input.value = '';
+  showToast('Comment posted!', 'success');
+}
+
+function commentKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); postComment(); }
+}
+
+/* ══════════════════════════════════════════════════════
+   EDITOR
+══════════════════════════════════════════════════════ */
+function renderOverlays() {
+  const strip = document.getElementById('overlayStrip');
+  strip.innerHTML = '';
+  OVERLAYS.forEach(ov => {
+    const div = document.createElement('div');
+    div.className = 'overlay-thumb' + (selectedOverlay === ov.id ? ' selected' : '');
+    div.title = ov.label;
+    div.innerHTML = `<span>${ov.emoji}</span>`;
+    div.onclick = () => selectOverlay(ov.id);
+    strip.appendChild(div);
+  });
+}
+
+function selectOverlay(id) {
+  selectedOverlay = selectedOverlay === id ? null : id;
+  renderOverlays();
+  const ov = OVERLAYS.find(o => o.id === id);
+  const layer = document.getElementById('overlayLayer');
+  const preview = document.getElementById('overlayPreview');
+  if (selectedOverlay && ov) {
+    layer.style.display = 'flex';
+    preview.textContent = ov.emoji;
+  } else {
+    layer.style.display = 'none';
+  }
+  document.getElementById('captureBtn').disabled = !selectedOverlay;
+}
+
+async function startWebcam() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    webcamStream = stream;
+    const video = document.getElementById('webcam');
+    video.srcObject = stream;
+    video.classList.add('active');
+    document.getElementById('webcamPlaceholder').style.display = 'none';
+    showToast('Camera enabled!', 'success');
+  } catch(e) {
+    showToast('Camera access denied', 'error');
+  }
+}
+
+function capturePhoto() {
+  if (!selectedOverlay) return;
+  const ov = OVERLAYS.find(o => o.id === selectedOverlay);
+  const photo = { id: Date.now(), emoji: ov.emoji, name: `capture_${capturedPhotos.length+1}.jpg`, size: Math.floor(Math.random()*500+200) + 'KB' };
+  capturedPhotos.push(photo);
+  renderThumbs();
+  showToast('Photo captured! 📸', 'success');
+}
+
+function handleUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const photo = { id: Date.now(), emoji: '🖼️', name: file.name, size: (file.size/1024).toFixed(0) + 'KB' };
+  capturedPhotos.push(photo);
+  renderThumbs();
+  showToast('Image uploaded!', 'success');
+  e.target.value = '';
+}
+
+function deletePhoto(id) {
+  capturedPhotos = capturedPhotos.filter(p => p.id !== id);
+  renderThumbs();
+  showToast('Photo removed', 'info');
+}
+
+function renderThumbs() {
+  const strip = document.getElementById('thumbStrip');
+  const empty = document.getElementById('thumbEmpty');
+  if (capturedPhotos.length === 0) {
+    empty.style.display = 'block';
+    strip.innerHTML = '';
+    strip.appendChild(empty);
+    return;
+  }
+  strip.innerHTML = '';
+  capturedPhotos.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'thumb-item';
+    div.innerHTML = `
+      <div class="thumb-item-img">${p.emoji}</div>
+      <div class="thumb-item-info">
+        <div class="thumb-item-name">${p.name}</div>
+        <div class="thumb-item-size">${p.size}</div>
+      </div>
+      <button class="thumb-delete" onclick="deletePhoto(${p.id})" title="Delete">✕</button>`;
+    strip.appendChild(div);
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   AUTH
+══════════════════════════════════════════════════════ */
+function switchTab(tab) {
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('formLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('formRegister').classList.toggle('active', tab === 'register');
+}
+
+function submitLogin(e) {
+  if (e) e.preventDefault();
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!user || !pass) { showToast('Please fill in all fields', 'error'); return false; }
+  isLoggedIn = true;
+  currentUser = user;
+  updateHeader();
+  document.getElementById('loginSuccess').classList.add('show');
+  showToast('Welcome back, ' + user + '! 👋', 'success');
+  setTimeout(() => {
+    document.getElementById('loginSuccess').classList.remove('show');
+    navTo('gallery');
+  }, 800);
+  return false;
+}
+
+function submitRegister(e) {
+  if (e) e.preventDefault();
+  e.preventDefault();
+  const user = document.getElementById('regUser').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass = document.getElementById('regPass').value;
+  if (!user || !email || !pass) { showToast('Please fill in all fields', 'error'); return; }
+  if (pass.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
+  document.getElementById('registerSuccess').classList.add('show');
+  showToast('Account created! 🎉', 'success');
+  setTimeout(() => {
+    document.getElementById('registerSuccess').classList.remove('show');
+    isLoggedIn = true;
+    currentUser = user;
+    updateHeader();
+    navTo('gallery');
+  }, 800);
+}
+
+function logout() {
+  isLoggedIn = false;
+  currentUser = null;
+  updateHeader();
+  navTo('gallery');
+  showToast('Logged out successfully', 'info');
+}
+
+/* ══════════════════════════════════════════════════════
+   PASSWORD STRENGTH
+══════════════════════════════════════════════════════ */
+function updateStrength(pass) {
+  let score = 0;
+  if (pass.length >= 8) score++;
+  if (/[A-Z]/.test(pass)) score++;
+  if (/[0-9]/.test(pass)) score++;
+  if (/[^A-Za-z0-9]/.test(pass)) score++;
+  const bar = document.getElementById('strengthBar');
+  const label = document.getElementById('strengthLabel');
+  const levels = [
+    { pct: '0%', color: '#ccc', text: 'Enter a password' },
+    { pct: '25%', color: '#ed4956', text: 'Weak' },
+    { pct: '50%', color: '#f39c12', text: 'Fair' },
+    { pct: '75%', color: '#3498db', text: 'Good' },
+    { pct: '100%', color: '#2ecc71', text: 'Strong 💪' },
+  ];
+  const lvl = pass.length === 0 ? levels[0] : levels[Math.min(score, 4)];
+  bar.style.width = lvl.pct;
+  bar.style.background = lvl.color;
+  label.textContent = lvl.text;
+  label.style.color = lvl.color;
+}
+
+/* ══════════════════════════════════════════════════════
+   TOASTS
+══════════════════════════════════════════════════════ */
+function showToast(msg, type = 'info') {
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span class="toast-icon">${icons[type]||'ℹ'}</span> ${msg}`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('removing');
+    setTimeout(() => toast.remove(), 220);
+  }, 3000);
+}
+
+/* ══════════════════════════════════════════════════════
+   KEYBOARD
+══════════════════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+/* ══════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════ */
+renderGallery();
+renderOverlays();
+renderThumbs();
+updateHeader();
+</script>
+</body>
+</html>

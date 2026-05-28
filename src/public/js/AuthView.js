@@ -44,17 +44,25 @@ function validateRegister() {
 
 function togglePassword(inputId, btn) {
   const input = document.getElementById(inputId);
-  const isHidden = input.type === 'password';
+  const isHidden = input.type === "password";
 
-  input.type = isHidden ? 'text' : 'password';
-  btn.querySelector('.eye-icon').style.display     = isHidden ? 'none'  : '';
-  btn.querySelector('.eye-off-icon').style.display = isHidden ? ''      : 'none';
-  btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+  input.type = isHidden ? "text" : "password";
+  btn.querySelector(".eye-icon").style.display = isHidden ? "none" : "";
+  btn.querySelector(".eye-off-icon").style.display = isHidden ? "" : "none";
+  btn.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
 }
 
 function switchTab(tab) {
-  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
-  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
-  document.getElementById('formLogin').classList.toggle('active', tab === 'login');
-  document.getElementById('formRegister').classList.toggle('active', tab === 'register');
+  document
+    .getElementById("tabLogin")
+    .classList.toggle("active", tab === "login");
+  document
+    .getElementById("tabRegister")
+    .classList.toggle("active", tab === "register");
+  document
+    .getElementById("formLogin")
+    .classList.toggle("active", tab === "login");
+  document
+    .getElementById("formRegister")
+    .classList.toggle("active", tab === "register");
 }

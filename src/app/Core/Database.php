@@ -1,9 +1,11 @@
 <?php
 
-class Database {
+class Database
+{
     private static $pdo_instance = null;
 
-    private function __construct () {
+    private function __construct()
+    {
         self::$pdo_instance = new PDO(
             "mysql:host=" . $_ENV['DB_HOST'] . ";dbname=" . $_ENV['DB_NAME'],
             $_ENV['DB_USER'],
@@ -13,7 +15,8 @@ class Database {
         self::$pdo_instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     }
 
-    static function getInstance() {
+    static function getInstance()
+    {
         if (self::$pdo_instance === NULL) {
             new Database();
         }

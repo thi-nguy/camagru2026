@@ -1,6 +1,7 @@
 <?php
 
-function render(string $view, array $data = []) {
+function render(string $view, array $data = [])
+{
     extract($data);
 
     $extraCssFile = '/css/' . pathinfo($view, PATHINFO_FILENAME) . '.css';
@@ -14,7 +15,8 @@ function render(string $view, array $data = []) {
     require __DIR__ . '/../Views/layout/footer.php';
 }
 
-function loadEnv(string $path) {
+function loadEnv(string $path)
+{
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
         if (!str_starts_with($line, '#')) {
@@ -24,54 +26,60 @@ function loadEnv(string $path) {
     }
 }
 
-function flashMessage(string $key): ?string {
-    if(!isset($_SESSION['flash'][$key])) return null;
+function flashMessage(string $key): ?string
+{
+    if (!isset($_SESSION['flash'][$key])) return null;
     $msg = htmlspecialchars($_SESSION['flash'][$key]);
     unset($_SESSION['flash'][$key]);
     return $msg;
 }
 
-function old($key, $default = '') {
+function old($key, $default = '')
+{
     if (! isset($_SESSION['flash']['old'][$key])) return $default;
     $oldInfo = htmlspecialchars($_SESSION['flash']['old'][$key]);
     unset($_SESSION['flash']['old'][$key]);
     return $oldInfo;
 }
 
-function error($key) {
+function error($key)
+{
     if (! isset($_SESSION['flash']['errors'][$key])) return null;
     $flashMsg = htmlspecialchars($_SESSION['flash']['errors'][$key]);
     unset($_SESSION['flash']['errors'][$key]);
     return  $flashMsg;
 }
 
-function success($key) {
+function success($key)
+{
     if (! isset($_SESSION['flash']['success'][$key])) return null;
     $flashMsg = htmlspecialchars($_SESSION['flash']['success'][$key]);
     unset($_SESSION['flash']['success'][$key]);
     return  $flashMsg;
 }
 
-function redirect(string $url) {
+function redirect(string $url)
+{
     header('Location: ' . $url);
     exit();
 }
 
-function sendConfirmEmail(string $toEmail, string $toName, string $token): bool {
-   $camagruAdminEmail = $_ENV['MAIL_USER'] ?? getenv('MAIL_USER');
-   $hostName = $_ENV['HOST'] ?? getenv('HOST');
-   $confirmUrl = $hostName . '/confirm?token=' . $token;
-   $subject = "Confirm your Camagru's account";
+function sendConfirmEmail(string $toEmail, string $toName, string $token): bool
+{
+    $camagruAdminEmail = $_ENV['MAIL_USER'] ?? getenv('MAIL_USER');
+    $hostName = $_ENV['HOST'] ?? getenv('HOST');
+    $confirmUrl = $hostName . '/confirm?token=' . $token;
+    $subject = "Confirm your Camagru's account";
 
-   $boundary = md5(uniqid(time()));
+    $boundary = md5(uniqid(time()));
 
-   $headers  = 'MIME-Version: 1.0' . "\r\n";
-   $headers .= 'Content-Type: multipart/alternative; boundary="' . $boundary . '"' . "\r\n";
-   $headers .= 'From: ' . $camagruAdminEmail . "\r\n";
+    $headers  = 'MIME-Version: 1.0' . "\r\n";
+    $headers .= 'Content-Type: multipart/alternative; boundary="' . $boundary . '"' . "\r\n";
+    $headers .= 'From: ' . $camagruAdminEmail . "\r\n";
 
-   $plainText = 'Hello ' . htmlspecialchars($toName) . '!' . "\r\n"
-           . 'Please confirm your email by copying this URL:' . "\r\n"
-           . $confirmUrl;
+    $plainText = 'Hello ' . htmlspecialchars($toName) . '!' . "\r\n"
+        . 'Please confirm your email by copying this URL:' . "\r\n"
+        . $confirmUrl;
 
     $html = '
            <html><body>
@@ -81,19 +89,20 @@ function sendConfirmEmail(string $toEmail, string $toName, string $token): bool 
                <p>Or copy this URL: ' . $confirmUrl . '</p>
            </body></html>';
     $message = "--{$boundary}\r\n"
-           . "Content-Type: text/plain; charset=UTF-8\r\n\r\n"
-           . $plainText . "\r\n\r\n"
-           . "--{$boundary}\r\n"
-           . "Content-Type: text/html; charset=UTF-8\r\n\r\n"
-           . $html . "\r\n\r\n"
-           . "--{$boundary}--";
+        . "Content-Type: text/plain; charset=UTF-8\r\n\r\n"
+        . $plainText . "\r\n\r\n"
+        . "--{$boundary}\r\n"
+        . "Content-Type: text/html; charset=UTF-8\r\n\r\n"
+        . $html . "\r\n\r\n"
+        . "--{$boundary}--";
 
-   $result = mail($toEmail, $subject, $message, $headers);
+    $result = mail($toEmail, $subject, $message, $headers);
 
-   return $result;
+    return $result;
 }
 
-function init_flash() {
+function init_flash()
+{
     if (!isset($_SESSION['flash'])) {
         $_SESSION['flash'] = [
             'errors' => [],
@@ -102,5 +111,5 @@ function init_flash() {
             'info' => null,
             'warning' => null,
         ];
-    }        
+    }
 }
