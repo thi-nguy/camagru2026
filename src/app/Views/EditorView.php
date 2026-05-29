@@ -28,9 +28,10 @@
                             <button class="btn btn-ghost btn-sm" onclick="startWebcam()" style="margin-top:4px">Enable Camera</button>
                         </div>
                         <video id="webcam" autoplay muted playsinline></video>
-                        <div class="webcam-overlay-layer" id="overlayLayer" style="display:none">
+                        <canvas id="preview" class="view"></canvas>
+                        <!-- <div class="webcam-overlay-layer" id="overlayLayer" style="display:none">
                             <div style="font-size:80px;opacity:.75" id="overlayPreview"></div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -41,15 +42,15 @@
                 </div> -->
 
                 <!-- Capture / upload -->
-                <!-- <div class="capture-row">
-                    <button class="btn btn-primary" id="captureBtn" onclick="capturePhoto()" disabled>
+                <div class="capture-row">
+                    <button class="btn btn-primary" disabled id="captureBtn" onclick="capturePhoto()">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <circle cx="12" cy="12" r="3" />
                             <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-7-4H9l-2 4h10l-2-4z" />
                         </svg>
                         Capture
                     </button>
-                    <label class="upload-label" for="fileUpload">
+                    <!-- <label class="upload-label" for="fileUpload">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                             <polyline points="17 8 12 3 7 8" />
@@ -57,8 +58,8 @@
                         </svg>
                         Upload image
                     </label>
-                    <input type="file" id="fileUpload" accept="image/*" onchange="handleUpload(event)">
-                </div> -->
+                    <input type="file" id="fileUpload" accept="image/*" onchange="handleUpload(event)"> -->
+                </div>
             </div>
 
             <!-- Sidebar: captured thumbnails -->
