@@ -58,22 +58,26 @@
 }
 
 .webcam-overlay-layer {
+  display: none;
   position: absolute;
   inset: 0;
   pointer-events: none;
+}
+
+.webcam-overlay-preview {
+  width: 100%;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.webcam-overlay-layer .overlay-img-preview {
-  width: 100%;
-  height: 100%;
+
+#overlayPreview {
+  display: block;
+  width: 20%;
+  height: auto;
   object-fit: contain;
-  opacity: 0.7;
-  font-size: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  opacity: 0.9;
 }
 
 #webcam {
@@ -82,4 +86,76 @@
   height: 100%;
   object-fit: cover;
   border-radius: var(--radius);
+}
+
+/* ─── OVERLAY STRIP ──────────────────────────── */
+.overlay-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.overlay-strip::-webkit-scrollbar {
+  height: 4px;
+}
+.overlay-strip::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.overlay-thumb {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-sm);
+  border: 2.5px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  background: var(--surface);
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+  user-select: none;
+}
+.overlay-thumb:hover {
+  border-color: #aaa;
+  transform: scale(1.03);
+}
+.overlay-thumb.selected {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent-light);
+}
+/* ─── CAPTURE / UPLOAD ROW ───────────────────── */
+.capture-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 4px;
+}
+.upload-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1.5px dashed var(--border);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.upload-label:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+input[type="file"] {
+  display: none;
 }

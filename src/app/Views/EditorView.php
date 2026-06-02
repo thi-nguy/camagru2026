@@ -27,19 +27,41 @@
                             <p>Camera not active</p>
                             <button class="btn btn-ghost btn-sm" onclick="startWebcam()" style="margin-top:4px">Enable Camera</button>
                         </div>
+                        <div class="webcam-placeholder" id="imagePlaceholder">
+                            <img id="imagePreview" alt="Selected Image">
+                        </div>
                         <video id="webcam" autoplay muted playsinline></video>
                         <canvas id="preview" class="view"></canvas>
-                        <!-- <div class="webcam-overlay-layer" id="overlayLayer" style="display:none">
-                            <div style="font-size:80px;opacity:.75" id="overlayPreview"></div>
-                        </div> -->
+                        <div class="webcam-overlay-layer" id="overlayLayer" style="display:none">
+                            <div class="webcam-overlay-preview">
+                                <img id="overlayPreview" alt="Selected Overlay">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Overlay selector -->
-                <!-- <div class="editor-section">
+                <div class="editor-section">
                     <div class="editor-label">Choose overlay</div>
-                    <div class="overlay-strip" id="overlayStrip"></div>
-                </div> -->
+                    <div class="overlay-strip" id="overlayStrip">
+                        <?php
+                        $dirPath = __DIR__ . '/../../public/assets/overlay/';
+                        $overlays = glob($dirPath . '*.{png,jpg}', GLOB_BRACE);
+                        if ($overlays) {
+                            foreach ($overlays as $file):
+                                $filename = basename($file);
+                                $url = '/assets/overlay/' . $filename; ?>
+                                <div class="overlay-thumb" data-url="<?php echo $url; ?>">
+                                    <img src=" <?php echo $url; ?>" alt="Overlay" style="width: 100%; height: auto; object-fit: cover;">
+                                </div>
+                        <?php
+                            endforeach;
+                        } else {
+                            echo '<span>Error on loading overlay</span>';
+                        }
+                        ?>
+                    </div>
+                </div>
 
                 <!-- Capture / upload -->
                 <div class="capture-row">
@@ -50,7 +72,7 @@
                         </svg>
                         Capture
                     </button>
-                    <!-- <label class="upload-label" for="fileUpload">
+                    <label class="upload-label" for="fileUpload">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                             <polyline points="17 8 12 3 7 8" />
@@ -58,7 +80,7 @@
                         </svg>
                         Upload image
                     </label>
-                    <input type="file" id="fileUpload" accept="image/*" onchange="handleUpload(event)"> -->
+                    <input type="file" id="fileUpload" accept="image/*" onchange="handleSelectImage(event)">
                 </div>
             </div>
 
