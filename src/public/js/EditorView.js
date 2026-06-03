@@ -20,14 +20,14 @@ document
   });
 
 function handleSelectLayout(url) {
-  console.log("URL of the image is: ", url);
   const overlay = document.getElementById("overlayLayer");
   overlay.style.display = "flex";
   overlay.style.justifyContent = "center";
   overlay.style.alignItems = "center";
   const overlayPreview = document.getElementById("overlayPreview");
   overlayPreview.src = url;
-  if (!VIDEO_STREAM) {
+  if (VIDEO_STREAM) {
+    console.log("VIDEO STREAM is STILL THERE");
     CAPTURE_BTN.disabled = false;
   }
 }
@@ -72,6 +72,7 @@ function capturePhoto() {
   CANVAS.height = WEBCAM.videoHeight;
   context2d.drawImage(WEBCAM, 0, 0, WEBCAM.videoWidth, WEBCAM.videoHeight);
   stopMediaStream(VIDEO_STREAM);
+  VIDEO_STREAM = null;
   CAPTURE_BTN.disabled = true;
   showToast("Screen captured!", "success");
 }
@@ -86,3 +87,115 @@ function stopMediaStream(stream) {
     WEBCAM.srcObject = null;
   }
 }
+
+class ElementTransformer {
+  constructor(element) {
+    this.element = element;
+    this.mode = "move"; // move, resize, rotate
+
+    // Khởi tạo trạng thái ban đầu
+    this.element.setAttribute("data-mode", this.mode);
+    this.element.style.position = "absolute"; // Bắt buộc để thay đổi top/left
+
+    // Gán sự kiện đổi chế độ
+    this.element.ondblclick = () => this.toggleMode();
+
+    // Bắt đầu với chế độ move
+    this.enableDrag();
+  }
+
+  toggleMode() {
+    // Reset các sự kiện cũ
+    console.log("Đã click đúp thành công!");
+    this.element.onmousedown = null;
+
+    if (this.mode === "move") {
+      this.mode = "rotate";
+      this.enableRotate();
+    } else if (this.mode === "rotate") {
+      this.mode = "resize";
+      this.enableResize();
+    } else {
+      this.mode = "move";
+      this.enableDrag();
+    }
+    this.element.setAttribute("data-mode", this.mode);
+    console.log(`Chế độ hiện tại: ${this.mode}`);
+  }
+
+  // --- LOGIC KÉO THẢ (DRAG) ---
+  enableDrag() {
+    let pos1 = 0,
+      pos2 = 0,
+      pos3 = 0,
+      pos4 = 0;
+
+    this.element.onmousedown = (e) => {
+      e.preventDefault();
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmousemove = (e) => {
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        this.element.style.top = this.element.offsetTop - pos2 + "px";
+        this.element.style.left = this.element.offsetLeft - pos1 + "px";
+      };
+      document.onmouseup = () => {
+        document.onmousemove = null;
+        document.onmouseup = null;
+      };
+    };
+  }
+
+  // --- LOGIC THAY ĐỔI KÍCH THƯỚC (RESIZE) ---
+  enableResize() {
+    let size = this.element.clientWidth;
+    let pos3 = 0;
+
+    this.element.onmousedown = (e) => {
+      e.preventDefault();
+      pos3 = e.clientX;
+      document.onmousemove = (e) => {
+        let delta = e.clientX - pos3;
+        size += delta;
+        this.element.style.width = size + "px";
+        pos3 = e.clientX;
+      };
+      document.onmouseup = () => {
+        document.onmousemove = null;
+        document.onmouseup = null;
+      };
+    };
+  }
+
+  // --- LOGIC XOAY (ROTATE) ---
+  enableRotate() {
+    let angle = 0;
+    let pos4 = 0;
+
+    this.element.onmousedown = (e) => {
+      e.preventDefault();
+      pos4 = e.clientY;
+      document.onmousemove = (e) => {
+        let delta = pos4 - e.clientY;
+        angle -= delta;
+        this.element.style.transform = `rotate(${angle}deg)`;
+        pos4 = e.clientY;
+      };
+      document.onmouseup = () => {
+        document.onmousemove = null;
+        document.onmouseup = null;
+      };
+    };
+  }
+}
+
+window.onload = () => {
+  const transformableImages = document.querySelectorAll("img.transformable");
+
+  transformableImages.forEach((img) => {
+    new ElementTransformer(img);
+  });
+};

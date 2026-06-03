@@ -57,13 +57,6 @@
   opacity: 0.6;
 }
 
-.webcam-overlay-layer {
-  display: none;
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
 .webcam-overlay-preview {
   width: 100%;
   height: auto;
@@ -73,11 +66,9 @@
 }
 
 #overlayPreview {
-  display: block;
   width: 20%;
   height: auto;
   object-fit: contain;
-  opacity: 0.9;
 }
 
 #webcam {
@@ -158,4 +149,26 @@
 }
 input[type="file"] {
   display: none;
+}
+
+.transformable {
+  position: absolute;
+  user-select: none;
+  cursor: grab;
+  object-fit: contain;
+  transition: transform 0.1s ease;
+}
+
+.transformable[data-mode="move"] {
+  cursor: move;
+}
+.transformable[data-mode="resize"] {
+  cursor: ew-resize;
+}
+.transformable[data-mode="rotate"] {
+  cursor: alias;
+}
+
+.transformable:hover {
+  outline: 2px dashed #007bff;
 }

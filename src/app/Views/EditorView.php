@@ -32,9 +32,9 @@
                         </div>
                         <video id="webcam" autoplay muted playsinline></video>
                         <canvas id="preview" class="view"></canvas>
-                        <div class="webcam-overlay-layer" id="overlayLayer" style="display:none">
+                        <div id="overlayLayer" style="display:none">
                             <div class="webcam-overlay-preview">
-                                <img id="overlayPreview" alt="Selected Overlay">
+                                <img id="overlayPreview" class="transformable" alt="Selected Overlay">
                             </div>
                         </div>
                     </div>
