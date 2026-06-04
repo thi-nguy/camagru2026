@@ -80,7 +80,7 @@
                         </svg>
                         Upload image
                     </label>
-                    <input type="file" id="fileUpload" accept="image/*" onchange="handleSelectImage(event)">
+                    <input type="file" id="fileUpload" accept="image/*" onchange="handleUploadImage(event)">
                 </div>
             </div>
 

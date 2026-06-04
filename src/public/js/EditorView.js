@@ -27,7 +27,6 @@ function handleSelectLayout(url) {
   const overlayPreview = document.getElementById("overlayPreview");
   overlayPreview.src = url;
   if (VIDEO_STREAM) {
-    console.log("VIDEO STREAM is STILL THERE");
     CAPTURE_BTN.disabled = false;
   }
 }
@@ -52,16 +51,18 @@ async function startWebcam() {
   }
 }
 
-function handleSelectImage(e) {
+function handleUploadImage(e) {
   const file = e.target.files[0];
   if (!file) return;
   if (!file.type.startsWith("image/")) {
-    showToastt("Please select an image!");
+    showToast("Please select an image!");
     return;
   }
   const imageURL = URL.createObjectURL(file);
   const imagePreview = document.getElementById("imagePreview");
   imagePreview.src = imageURL;
+  document.getElementById("imagePlaceholder").style.display = "flex";
+  document.getElementById("webcamPlaceholder").style.display = "none";
 }
 
 function capturePhoto() {

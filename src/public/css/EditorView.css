@@ -173,6 +173,14 @@ input[type="file"] {
   outline: 2px dashed #007bff;
 }
 
+/* ─── UPLOAD IMAGE ──────────────────────── */
+#imagePreview {
+  user-select: none;
+  object-fit: fill;
+  max-width: 100%;
+  height: auto;
+}
+
 /* ─── THUMBNAIL SIDEBAR ──────────────────────── */
 .sidebar-title {
   font-size: 13px;
