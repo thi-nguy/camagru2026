@@ -179,10 +179,11 @@ body {
 }
 .btn-ghost {
   background: transparent;
-  color: var(--text);
+  color: var(--text-light);
   border: 1.5px solid var(--border);
 }
 .btn-ghost:hover {
+  color: var(--text-muted);
   background: var(--surface);
   border-color: #aaa;
 }

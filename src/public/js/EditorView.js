@@ -71,42 +71,37 @@ function capturePhoto() {
   CANVAS.width = WEBCAM.videoWidth;
   CANVAS.height = WEBCAM.videoHeight;
   context2d.drawImage(WEBCAM, 0, 0, WEBCAM.videoWidth, WEBCAM.videoHeight);
-  stopMediaStream(VIDEO_STREAM);
-  VIDEO_STREAM = null;
-  CAPTURE_BTN.disabled = true;
+  // stopMediaStream(VIDEO_STREAM);
+  // VIDEO_STREAM = null;
+  // CAPTURE_BTN.disabled = true;
   showToast("Screen captured!", "success");
 }
 
-function stopMediaStream(stream) {
-  if (!stream) return;
-  const tracks = stream.getTracks();
-  tracks.forEach((track) => {
-    track.stop();
-  });
-  if (WEBCAM) {
-    WEBCAM.srcObject = null;
-  }
-}
+// function stopMediaStream(stream) {
+//   if (!stream) return;
+//   const tracks = stream.getTracks();
+//   tracks.forEach((track) => {
+//     track.stop();
+//   });
+//   if (WEBCAM) {
+//     WEBCAM.srcObject = null;
+//   }
+// }
 
 class ElementTransformer {
   constructor(element) {
     this.element = element;
     this.mode = "move"; // move, resize, rotate
 
-    // Khởi tạo trạng thái ban đầu
     this.element.setAttribute("data-mode", this.mode);
-    this.element.style.position = "absolute"; // Bắt buộc để thay đổi top/left
 
-    // Gán sự kiện đổi chế độ
     this.element.ondblclick = () => this.toggleMode();
 
-    // Bắt đầu với chế độ move
     this.enableDrag();
   }
 
   toggleMode() {
     // Reset các sự kiện cũ
-    console.log("Đã click đúp thành công!");
     this.element.onmousedown = null;
 
     if (this.mode === "move") {
@@ -120,7 +115,6 @@ class ElementTransformer {
       this.enableDrag();
     }
     this.element.setAttribute("data-mode", this.mode);
-    console.log(`Chế độ hiện tại: ${this.mode}`);
   }
 
   // --- LOGIC KÉO THẢ (DRAG) ---

@@ -27,7 +27,7 @@
                             <p>Camera not active</p>
                             <button class="btn btn-ghost btn-sm" onclick="startWebcam()" style="margin-top:4px">Enable Camera</button>
                         </div>
-                        <div class="webcam-placeholder" id="imagePlaceholder">
+                        <div class="webcam-placeholder" id="imagePlaceholder" style="display: none">
                             <img id="imagePreview" alt="Selected Image">
                         </div>
                         <video id="webcam" autoplay muted playsinline></video>
