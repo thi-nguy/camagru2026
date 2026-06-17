@@ -1,4 +1,5 @@
 let VIDEO_STREAM;
+let IMG = new Image();
 const WEBCAM = document.getElementById("webcam");
 const CAPTURE_BTN = document.getElementById("captureBtn");
 
@@ -14,17 +15,22 @@ document
       }
       thumbnail.classList.add("selected");
       const url = thumbnail.getAttribute("data-url");
-      handleSelectLayout(url);
+      handleSelectSticker(url);
     }
   });
 
-function handleSelectLayout(url) {
-  const sticker = document.getElementById("stickerLayer");
-  sticker.style.display = "flex";
-  sticker.style.justifyContent = "center";
-  sticker.style.alignItems = "center";
-  const stickerPreview = document.getElementById("stickerPreview");
-  stickerPreview.src = url;
+function handleSelectSticker(url) {
+  // ! add multiple stickers here => can't move/resize/turn
+  const stickerLayer = document.querySelector(".sticker-layer");
+  stickerLayer.style.display = "flex";
+
+  const selectedSticker = document.createElement("img");
+  selectedSticker.src = url;
+  selectedSticker.className = "transformable";
+  selectedSticker.alt = "Selected Sticker";
+
+  document.querySelector(".sticker-preview").appendChild(selectedSticker);
+
   if (VIDEO_STREAM) {
     CAPTURE_BTN.disabled = false;
   }
@@ -33,9 +39,8 @@ function handleSelectLayout(url) {
 async function startWebcam() {
   try {
     VIDEO_STREAM = await navigator.mediaDevices.getUserMedia({ video: true });
-    const video = document.getElementById("webcam");
-    video.srcObject = VIDEO_STREAM;
-    video.style.display = "block";
+    WEBCAM.srcObject = VIDEO_STREAM;
+    WEBCAM.style.display = "block";
     document.getElementById("webcamPlaceholder").style.display = "none";
     showToast("Camera enabled!", "success");
     const sticker = document.getElementById("stickerLayer");
@@ -45,7 +50,7 @@ async function startWebcam() {
       showToast("Choose Sticker to take photo!");
     }
   } catch (e) {
-    console.error(e);
+    cotnsole.error(e);
     showToast("Camera access denied", "error");
   }
 }
@@ -58,6 +63,7 @@ function handleUploadImageFromComputer(e) {
     return;
   }
   const imageURL = URL.createObjectURL(file);
+  IMG.src = imageURL;
   const imagePreview = document.getElementById("imagePreview");
   imagePreview.src = imageURL;
   document.getElementById("imagePlaceholder").style.display = "flex";
@@ -68,25 +74,23 @@ function handleUploadImageFromComputer(e) {
 
 function capturePhoto() {
   const canvas = document.createElement("canvas");
-  canvas.width = WEBCAM.videoWidth / 4;
-  canvas.height = WEBCAM.videoHeight / 4;
   const context2d = canvas.getContext("2d");
   if (
-    // document.getElementById("webcamPlaceholder").style.display === "none" ||
-    // WEBCAM.style.display === "none"
-    false
+    document.getElementById("webcamPlaceholder").style.display !== "none" ||
+    WEBCAM.style.display !== "none"
   ) {
+    canvas.width = WEBCAM.videoWidth / 4;
+    canvas.height = WEBCAM.videoHeight / 4;
     context2d.drawImage(WEBCAM, 0, 0, canvas.width, canvas.height);
   } else {
-    const uploadedImg = document.getElementById("imagePreview");
-    context2d.drawImage(uploadedImg, 0, 0, canvas.width, canvas.height);
+    canvas.width = IMG.width / 4;
+    canvas.height = IMG.height / 4;
+    context2d.drawImage(IMG, 0, 0, canvas.width, canvas.height);
   }
   document.getElementById("thumbEmpty").style.display = "none";
-  const thumbStrip = document.getElementById("thumbStrip");
-  thumbStrip.appendChild(canvas);
+  document.getElementById("thumbStrip").appendChild(canvas);
 
-  const sticker = document.getElementById("stickerPreview");
-  context2d.drawImage(sticker, sticker.clientX, sticker.clientY);
+  // ! draw Sticker here
 }
 
 class ElementTransformer {
@@ -183,7 +187,7 @@ class ElementTransformer {
 }
 
 window.onload = () => {
-  const transformableImages = document.querySelectorAll("img.transformable");
+  const transformableImages = document.querySelectorAll("img.transformable"); // ! co the append child de chon nhieu sticker mot luc.
 
   transformableImages.forEach((img) => {
     new ElementTransformer(img);

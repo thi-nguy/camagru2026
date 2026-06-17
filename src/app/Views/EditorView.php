@@ -31,9 +31,9 @@
                             <img id="imagePreview" alt="Selected Image">
                         </div>
                         <video id="webcam" autoplay muted playsinline></video>
-                        <div id="stickerLayer" style="display:none">
-                            <div class="webcam-sticker-preview">
-                                <img id="stickerPreview" class="transformable" alt="Selected Sticker">
+                        <div class="sticker-layer">
+                            <div class="sticker-preview">
+
                             </div>
                         </div>
                     </div>

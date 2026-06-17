@@ -57,20 +57,6 @@
   opacity: 0.6;
 }
 
-.webcam-sticker-preview {
-  width: 100%;
-  height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#stickerPreview {
-  width: 20%;
-  height: auto;
-  object-fit: contain;
-}
-
 #webcam {
   display: none;
   width: 100%;
@@ -78,6 +64,50 @@
   object-fit: cover;
   border-radius: var(--radius);
 }
+
+/* ─── SELECTED STICKER ──────────────────────────── */
+.sticker-layer {
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.sticker-preview {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.transformable {
+  position: absolute;
+  user-select: none;
+  cursor: grab;
+  object-fit: contain;
+  transition: transform 0.1s ease;
+  width: 20%;
+  height: auto;
+}
+
+.transformable[data-mode="move"] {
+  cursor: move;
+}
+.transformable[data-mode="resize"] {
+  cursor: ew-resize;
+}
+.transformable[data-mode="rotate"] {
+  cursor: alias;
+}
+
+.transformable:hover {
+  outline: 2px dashed #007bff;
+}
+
+/* #stickerPreview {
+  width: 20%;
+  height: auto;
+  object-fit: contain;
+} */
 
 /* ─── STICKER STRIP ──────────────────────────── */
 .sticker-strip {
@@ -149,28 +179,6 @@
 }
 input[type="file"] {
   display: none;
-}
-
-.transformable {
-  position: absolute;
-  user-select: none;
-  cursor: grab;
-  object-fit: contain;
-  transition: transform 0.1s ease;
-}
-
-.transformable[data-mode="move"] {
-  cursor: move;
-}
-.transformable[data-mode="resize"] {
-  cursor: ew-resize;
-}
-.transformable[data-mode="rotate"] {
-  cursor: alias;
-}
-
-.transformable:hover {
-  outline: 2px dashed #007bff;
 }
 
 /* ─── UPLOAD IMAGE ──────────────────────── */
