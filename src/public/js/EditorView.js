@@ -1,13 +1,12 @@
 let VIDEO_STREAM;
 const WEBCAM = document.getElementById("webcam");
-const CANVAS = document.getElementById("preview");
 const CAPTURE_BTN = document.getElementById("captureBtn");
 
 // Event Delegation Technique
 document
-  .querySelector(".overlay-strip")
+  .querySelector(".sticker-strip")
   .addEventListener("click", function (e) {
-    const thumbnail = e.target.closest(".overlay-thumb");
+    const thumbnail = e.target.closest(".sticker-thumb");
     if (thumbnail) {
       const currentSelected = this.querySelector(".selected");
       if (currentSelected) {
@@ -20,12 +19,12 @@ document
   });
 
 function handleSelectLayout(url) {
-  const overlay = document.getElementById("overlayLayer");
-  overlay.style.display = "flex";
-  overlay.style.justifyContent = "center";
-  overlay.style.alignItems = "center";
-  const overlayPreview = document.getElementById("overlayPreview");
-  overlayPreview.src = url;
+  const sticker = document.getElementById("stickerLayer");
+  sticker.style.display = "flex";
+  sticker.style.justifyContent = "center";
+  sticker.style.alignItems = "center";
+  const stickerPreview = document.getElementById("stickerPreview");
+  stickerPreview.src = url;
   if (VIDEO_STREAM) {
     CAPTURE_BTN.disabled = false;
   }
@@ -39,11 +38,11 @@ async function startWebcam() {
     video.style.display = "block";
     document.getElementById("webcamPlaceholder").style.display = "none";
     showToast("Camera enabled!", "success");
-    const overlay = document.getElementById("overlayLayer");
-    if (overlay.style.display === "flex") {
+    const sticker = document.getElementById("stickerLayer");
+    if (sticker.style.display === "flex") {
       CAPTURE_BTN.disabled = false;
     } else {
-      showToast("Choose Overlay to take photo!");
+      showToast("Choose Sticker to take photo!");
     }
   } catch (e) {
     console.error(e);
@@ -51,7 +50,7 @@ async function startWebcam() {
   }
 }
 
-function handleUploadImage(e) {
+function handleUploadImageFromComputer(e) {
   const file = e.target.files[0];
   if (!file) return;
   if (!file.type.startsWith("image/")) {
@@ -63,48 +62,44 @@ function handleUploadImage(e) {
   imagePreview.src = imageURL;
   document.getElementById("imagePlaceholder").style.display = "flex";
   document.getElementById("webcamPlaceholder").style.display = "none";
+  WEBCAM.style.display = "none";
+  CAPTURE_BTN.disabled = false;
 }
 
 function capturePhoto() {
-  const context2d = CANVAS.getContext("2d");
-  WEBCAM.style.display = "none";
-  CANVAS.style.display = "block";
-  CANVAS.width = WEBCAM.videoWidth;
-  CANVAS.height = WEBCAM.videoHeight;
-  context2d.drawImage(WEBCAM, 0, 0, WEBCAM.videoWidth, WEBCAM.videoHeight);
-  // stopMediaStream(VIDEO_STREAM);
-  // VIDEO_STREAM = null;
-  // CAPTURE_BTN.disabled = true;
-  showToast("Screen captured!", "success");
-}
+  const canvas = document.createElement("canvas");
+  canvas.width = WEBCAM.videoWidth / 4;
+  canvas.height = WEBCAM.videoHeight / 4;
+  const context2d = canvas.getContext("2d");
+  if (
+    // document.getElementById("webcamPlaceholder").style.display === "none" ||
+    // WEBCAM.style.display === "none"
+    false
+  ) {
+    context2d.drawImage(WEBCAM, 0, 0, canvas.width, canvas.height);
+  } else {
+    const uploadedImg = document.getElementById("imagePreview");
+    context2d.drawImage(uploadedImg, 0, 0, canvas.width, canvas.height);
+  }
+  document.getElementById("thumbEmpty").style.display = "none";
+  const thumbStrip = document.getElementById("thumbStrip");
+  thumbStrip.appendChild(canvas);
 
-// function stopMediaStream(stream) {
-//   if (!stream) return;
-//   const tracks = stream.getTracks();
-//   tracks.forEach((track) => {
-//     track.stop();
-//   });
-//   if (WEBCAM) {
-//     WEBCAM.srcObject = null;
-//   }
-// }
+  const sticker = document.getElementById("stickerPreview");
+  context2d.drawImage(sticker, sticker.clientX, sticker.clientY);
+}
 
 class ElementTransformer {
   constructor(element) {
     this.element = element;
     this.mode = "move"; // move, resize, rotate
-
     this.element.setAttribute("data-mode", this.mode);
-
     this.element.ondblclick = () => this.toggleMode();
-
     this.enableDrag();
   }
 
   toggleMode() {
-    // Reset các sự kiện cũ
     this.element.onmousedown = null;
-
     if (this.mode === "move") {
       this.mode = "rotate";
       this.enableRotate();
@@ -120,22 +115,22 @@ class ElementTransformer {
 
   // --- LOGIC KÉO THẢ (DRAG) ---
   enableDrag() {
-    let pos1 = 0,
-      pos2 = 0,
-      pos3 = 0,
-      pos4 = 0;
+    let deltaX = 0,
+      deltaY = 0,
+      originalX = 0,
+      originalY = 0;
 
     this.element.onmousedown = (e) => {
       e.preventDefault();
-      pos3 = e.clientX;
-      pos4 = e.clientY;
+      originalX = e.clientX;
+      originalY = e.clientY;
       document.onmousemove = (e) => {
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        this.element.style.top = this.element.offsetTop - pos2 + "px";
-        this.element.style.left = this.element.offsetLeft - pos1 + "px";
+        deltaX = originalX - e.clientX;
+        deltaY = originalY - e.clientY;
+        originalX = e.clientX;
+        originalY = e.clientY;
+        this.element.style.top = this.element.offsetTop - deltaY + "px";
+        this.element.style.left = this.element.offsetLeft - deltaX + "px";
       };
       document.onmouseup = () => {
         document.onmousemove = null;

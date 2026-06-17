@@ -1,7 +1,7 @@
 <section class="view.active" id="viewEditor">
     <div class="editor-wrap">
         <h2 class="section-heading">Photo Editor</h2>
-        <p class="section-sub">Capture a photo or upload one, then apply a fun overlay.</p>
+        <p class="section-sub">Capture a photo or upload one, then apply a fun sticker.</p>
 
         <!-- Auth gate -->
         <!-- <div id="editorAuthGate" class="auth-gate-notice" style="display:none">
@@ -31,33 +31,32 @@
                             <img id="imagePreview" alt="Selected Image">
                         </div>
                         <video id="webcam" autoplay muted playsinline></video>
-                        <canvas id="preview" class="view"></canvas>
-                        <div id="overlayLayer" style="display:none">
-                            <div class="webcam-overlay-preview">
-                                <img id="overlayPreview" class="transformable" alt="Selected Overlay">
+                        <div id="stickerLayer" style="display:none">
+                            <div class="webcam-sticker-preview">
+                                <img id="stickerPreview" class="transformable" alt="Selected Sticker">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Overlay selector -->
+                <!-- Sticker selector -->
                 <div class="editor-section">
-                    <div class="editor-label">Choose overlay</div>
-                    <div class="overlay-strip" id="overlayStrip">
+                    <div class="editor-label">Choose sticker</div>
+                    <div class="sticker-strip" id="stickerStrip">
                         <?php
-                        $dirPath = __DIR__ . '/../../public/assets/overlay/';
-                        $overlays = glob($dirPath . '*.{png,jpg}', GLOB_BRACE);
-                        if ($overlays) {
-                            foreach ($overlays as $file):
+                        $dirPath = __DIR__ . '/../../public/assets/sticker/';
+                        $stickers = glob($dirPath . '*.{png,jpg}', GLOB_BRACE);
+                        if ($stickers) {
+                            foreach ($stickers as $file):
                                 $filename = basename($file);
-                                $url = '/assets/overlay/' . $filename; ?>
-                                <div class="overlay-thumb" data-url="<?php echo $url; ?>">
-                                    <img src=" <?php echo $url; ?>" alt="Overlay" style="width: 100%; height: auto; object-fit: cover;">
+                                $url = '/assets/sticker/' . $filename; ?>
+                                <div class="sticker-thumb" data-url="<?php echo $url; ?>">
+                                    <img src=" <?php echo $url; ?>" alt="Sticker" style="width: 100%; height: auto; object-fit: cover;">
                                 </div>
                         <?php
                             endforeach;
                         } else {
-                            echo '<span>Error on loading overlay</span>';
+                            echo '<span>Error on loading sticker</span>';
                         }
                         ?>
                     </div>
@@ -80,8 +79,8 @@
                         </svg>
                         Upload image
                     </label>
-                    <input type="file" id="fileUpload" accept="image/*" onchange="handleUploadImage(event)">
                 </div>
+                <input type="file" id="fileUpload" accept="image/*" onchange="handleUploadImageFromComputer(event)">
             </div>
 
             <!-- Sidebar: captured thumbnails -->

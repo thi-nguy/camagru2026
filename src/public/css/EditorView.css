@@ -57,7 +57,7 @@
   opacity: 0.6;
 }
 
-.webcam-overlay-preview {
+.webcam-sticker-preview {
   width: 100%;
   height: auto;
   display: flex;
@@ -65,7 +65,7 @@
   justify-content: center;
 }
 
-#overlayPreview {
+#stickerPreview {
   width: 20%;
   height: auto;
   object-fit: contain;
@@ -79,8 +79,8 @@
   border-radius: var(--radius);
 }
 
-/* ─── OVERLAY STRIP ──────────────────────────── */
-.overlay-strip {
+/* ─── STICKER STRIP ──────────────────────────── */
+.sticker-strip {
   display: flex;
   gap: 10px;
   overflow-x: auto;
@@ -88,15 +88,15 @@
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
-.overlay-strip::-webkit-scrollbar {
+.sticker-strip::-webkit-scrollbar {
   height: 4px;
 }
-.overlay-strip::-webkit-scrollbar-thumb {
+.sticker-strip::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 4px;
 }
 
-.overlay-thumb {
+.sticker-thumb {
   flex-shrink: 0;
   width: 80px;
   height: 80px;
@@ -114,11 +114,11 @@
     transform 0.15s;
   user-select: none;
 }
-.overlay-thumb:hover {
+.sticker-thumb:hover {
   border-color: #aaa;
   transform: scale(1.03);
 }
-.overlay-thumb.selected {
+.sticker-thumb.selected {
   border-color: var(--accent);
   outline: 2px solid var(--accent-light);
 }
